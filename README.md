@@ -1,14 +1,14 @@
 # NT Billiard Bill Splitter
 
-A simple web application to help split billiard game bills among players. Perfect for tracking expenses in pool halls and billiard clubs.
+Tool tính tiền chơi bi a cho mấy ae club NashTech, rảnh háng nên làm trong 1 buổi chiều
+
+![Screenshot](screenshot.png)
 
 ## Features
 
-- Track multiple games and players
-- Calculate per-player costs
-- Split table rental fees
-- Supports different game types and durations
-- Mobile-friendly interface
+- Fully responsive, mobile friendly
+- Crafted with modern UI (Tailwind with proper light/dark modes)
+- Multi-languages support (support Vietnamese and English by defult, but additional languages can easily be added, check the i18n directory for language files)
 
 ## Demo
 
