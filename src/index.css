@@ -4,10 +4,28 @@
 
 :root {
   font-family: 'Bai Jamjuree', system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Dark mode fixes for inputs */
 .dark input[type="time"],
 .dark input[type="number"] {
   color-scheme: dark;
+}
+
+/* Better touch targets on mobile */
+@media (max-width: 640px) {
+  button, 
+  input, 
+  select {
+    min-height: 44px;
+  }
+}
+
+/* Prevent zoom on focus for iOS */
+@media (max-width: 640px) {
+  input[type="time"],
+  input[type="number"] {
+    font-size: 16px;
+  }
 }

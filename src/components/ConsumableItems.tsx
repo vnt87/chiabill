@@ -36,16 +36,16 @@ export function ConsumableItems({ items, players, onItemsChange }: ConsumableIte
               <Checkbox.Root
                 checked={item.selected}
                 onCheckedChange={() => handleSelectionChange(index)}
-                className="h-4 w-4 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded flex items-center justify-center"
+                className="h-4 w-4 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-600"
               >
                 <Checkbox.Indicator>
-                  <CheckIcon className="h-3 w-3 text-indigo-600" />
+                  <CheckIcon className="h-3 w-3 text-indigo-600 dark:text-indigo-400" />
                 </Checkbox.Indicator>
               </Checkbox.Root>
               <span className="ml-2 text-gray-700 dark:text-gray-300">{item.name}</span>
             </div>
             {item.selected && (
-              <div className="grid sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="grid grid-cols-2 gap-3 sm:col-span-2">
                   <div className="space-y-1">
                     <label className="block text-sm text-gray-600 dark:text-gray-400">Quantity</label>
@@ -77,21 +77,21 @@ export function ConsumableItems({ items, players, onItemsChange }: ConsumableIte
                     value={item.assignedPlayer}
                     onValueChange={(value) => handleValueChange(index, 'assignedPlayer', value)}
                   >
-                    <Select.Trigger className="inline-flex items-center justify-between w-full px-3 py-2 text-sm border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <Select.Trigger className="inline-flex items-center justify-between w-full px-3 py-2 text-sm border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600">
                       <Select.Value />
                       <Select.Icon>
-                        <ChevronDownIcon className="h-4 w-4" />
+                        <ChevronDownIcon className="h-4 w-4 dark:text-gray-400" />
                       </Select.Icon>
                     </Select.Trigger>
                     
                     <Select.Portal>
-                      <Select.Content className="bg-white dark:bg-gray-800 rounded-md shadow-lg border dark:border-gray-700">
+                      <Select.Content className="bg-white dark:bg-gray-800 rounded-md shadow-lg border dark:border-gray-700 z-50">
                         <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-white dark:bg-gray-800 cursor-default">
-                          <ChevronUpIcon />
+                          <ChevronUpIcon className="dark:text-gray-400" />
                         </Select.ScrollUpButton>
                         
                         <Select.Viewport className="p-1">
-                          <Select.Item value="ALL" className="relative flex items-center px-8 py-2 text-sm rounded select-none hover:bg-gray-100 dark:hover:bg-gray-700 cursor-default">
+                          <Select.Item value="ALL" className="relative flex items-center px-8 py-2 text-sm rounded select-none hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white cursor-default">
                             <Select.ItemText>All Players</Select.ItemText>
                             <Select.ItemIndicator className="absolute left-2 inline-flex items-center">
                               <CheckIcon className="w-4 h-4" />
@@ -102,7 +102,7 @@ export function ConsumableItems({ items, players, onItemsChange }: ConsumableIte
                             <Select.Item 
                               key={player.name} 
                               value={player.name}
-                              className="relative flex items-center px-8 py-2 text-sm rounded select-none hover:bg-gray-100 dark:hover:bg-gray-700 cursor-default"
+                              className="relative flex items-center px-8 py-2 text-sm rounded select-none hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white cursor-default"
                             >
                               <Select.ItemText>{player.name}</Select.ItemText>
                               <Select.ItemIndicator className="absolute left-2 inline-flex items-center">
@@ -113,7 +113,7 @@ export function ConsumableItems({ items, players, onItemsChange }: ConsumableIte
                         </Select.Viewport>
                         
                         <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-white dark:bg-gray-800 cursor-default">
-                          <ChevronDownIcon />
+                          <ChevronDownIcon className="dark:text-gray-400" />
                         </Select.ScrollDownButton>
                       </Select.Content>
                     </Select.Portal>
