@@ -42,8 +42,15 @@ export function BillSummary({ data }: BillSummaryProps) {
     const playerTime = calculatePlayerTime(player);
     if (totalPlayerMinutes === 0) return 0;
     
+    // Calculate total consumables cost
+    const totalConsumablesCost = sharedConsumables + 
+      Object.values(playerConsumables).reduce((sum, cost) => sum + cost, 0);
+    
+    // The base amount should be total amount minus consumables
+    const baseAmount = Math.max(0, data.totalAmount - totalConsumablesCost);
+    
     // Base amount share based on time
-    const baseShare = (data.totalAmount * playerTime) / totalPlayerMinutes;
+    const baseShare = (baseAmount * playerTime) / totalPlayerMinutes;
     
     // Share of common consumables
     const commonConsumableShare = sharedConsumables / participatingPlayers.length;

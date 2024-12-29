@@ -97,14 +97,16 @@ function App() {
                 <input
                   type="number"
                   min="0"
-                  step="1000"
+                  step="1"
                   value={billData.totalAmount}
                   onChange={(e) => setBillData({
                     ...billData,
                     totalAmount: parseFloat(e.target.value) || 0
                   })}
+                  onFocus={(e) => e.target.placeholder = ''}
+                  onBlur={(e) => e.target.placeholder = 'Total amount'}
                   className="w-full border rounded-md p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  placeholder="Enter total amount"
+                  placeholder="Total amount"
                 />
               </div>
 
