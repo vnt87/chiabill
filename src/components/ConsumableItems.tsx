@@ -35,8 +35,8 @@ export function ConsumableItems({ items, players, onItemsChange }: ConsumableIte
               <span className="ml-2 text-gray-700 dark:text-gray-300">{item.name}</span>
             </div>
             {item.selected && (
-              <div className="grid grid-cols-1 gap-2">
-                <div className="grid grid-cols-2 gap-2">
+              <div className="grid sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 gap-3 sm:col-span-2">
                   <div className="space-y-1">
                     <label className="block text-sm text-gray-600 dark:text-gray-400">Quantity</label>
                     <input
