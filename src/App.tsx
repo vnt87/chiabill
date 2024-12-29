@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import './index.css';
 import { PlayerSelection } from './components/PlayerSelection';
-import { ConsumableItems } from './components/ConsumableItems';
 import { BillSummary } from './components/BillSummary';
-import { Player, ConsumableItem, BillData } from './types';
+import { Player, BillData } from './types';
 import { Sun, Moon, Heart } from 'lucide-react';
 
 const initialPlayers: Player[] = [
@@ -12,15 +11,10 @@ const initialPlayers: Player[] = [
   name,
   participated: false,
   startTime: '',
-  endTime: ''
+  endTime: '',
+  consumables: [],
+  isFullSession: true  // Set default value to true
 }));
-
-const initialConsumables: ConsumableItem[] = [
-  { name: "Coke", selected: false, quantity: 1, costPerUnit: 15, assignedPlayer: 'ALL' },
-  { name: "Bánh mì", selected: false, quantity: 1, costPerUnit: 20, assignedPlayer: 'ALL' },
-  { name: "Nước lọc", selected: false, quantity: 1, costPerUnit: 15, assignedPlayer: 'ALL' },
-  { name: "Mì tôm", selected: false, quantity: 1, costPerUnit: 35, assignedPlayer: 'ALL' }
-];
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -46,7 +40,7 @@ function App() {
     sessionStart: '',
     sessionEnd: '',
     players: initialPlayers,
-    consumables: initialConsumables
+    consumables: []
   });
 
   useEffect(() => {
@@ -149,12 +143,6 @@ function App() {
               onPlayerChange={(players) => setBillData({ ...billData, players })}
               sessionStart={billData.sessionStart}
               sessionEnd={billData.sessionEnd}
-            />
-
-            <ConsumableItems
-              items={billData.consumables}
-              onItemsChange={(consumables) => setBillData({ ...billData, consumables })}
-              players={billData.players.filter(p => p.participated)}
             />
           </div>
 
