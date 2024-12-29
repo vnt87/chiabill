@@ -100,8 +100,15 @@ export function BillSummary({ data }: BillSummaryProps) {
                   </span>
                 </div>
                 {playerIndividualItems > 0 && (
-                  <div className="text-sm text-gray-500 dark:text-gray-500">
-                    Individual items: {formatCurrency(playerIndividualItems)}
+                  <div className="text-sm text-gray-500 dark:text-gray-500 pl-4">
+                    {data.consumables
+                      .filter(item => item.selected && item.assignedPlayer === player.name)
+                      .map(item => (
+                        <div key={item.name} className="flex justify-between">
+                          <span>{item.name} (x{item.quantity})</span>
+                          <span>{formatCurrency(item.quantity * item.costPerUnit)}</span>
+                        </div>
+                      ))}
                   </div>
                 )}
               </div>

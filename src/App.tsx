@@ -7,7 +7,7 @@ import { Player, ConsumableItem, BillData } from './types';
 import { Sun, Moon, Heart } from 'lucide-react';
 
 const initialPlayers: Player[] = [
-  "Nam", "Chung", "Huy", "Tinh", "Hieu", "Tuan"
+  "Nam", "Chung", "Huy", "Tính", "Hiếu", "Tuấn"
 ].map(name => ({
   name,
   participated: false,
@@ -16,14 +16,11 @@ const initialPlayers: Player[] = [
 }));
 
 const initialConsumables: ConsumableItem[] = [
-  "Coke", "Bread", "Water", "Noodle"
-].map(name => ({
-  name,
-  selected: false,
-  quantity: 1,
-  costPerUnit: 0,
-  assignedPlayer: 'ALL'
-}));
+  { name: "Coke", selected: false, quantity: 1, costPerUnit: 15, assignedPlayer: 'ALL' },
+  { name: "Bánh mì", selected: false, quantity: 1, costPerUnit: 20, assignedPlayer: 'ALL' },
+  { name: "Nước lọc", selected: false, quantity: 1, costPerUnit: 15, assignedPlayer: 'ALL' },
+  { name: "Mì tôm", selected: false, quantity: 1, costPerUnit: 35, assignedPlayer: 'ALL' }
+];
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {

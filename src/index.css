@@ -3,21 +3,11 @@
 @tailwind utilities;
 
 :root {
-  font-family: 'Bai Jamjuree', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
-/* Add these new styles */
-.dark input[type="time"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-}
-
-.dark input[type="time"]::-webkit-inner-spin-button,
-.dark input[type="time"]::-webkit-outer-spin-button {
-  filter: invert(1);
-}
-
-/* Color fixes for other inputs in dark mode */
-.dark input[type="number"]::-webkit-inner-spin-button,
-.dark input[type="number"]::-webkit-outer-spin-button {
-  filter: invert(1);
+/* Dark mode fixes for inputs */
+.dark input[type="time"],
+.dark input[type="number"] {
+  color-scheme: dark;
 }

@@ -1,5 +1,6 @@
 import { Player } from '../types';
 import { Switch } from '@headlessui/react';
+import { useEffect } from 'react';
 
 interface PlayerSelectionProps {
   players: Player[];
@@ -9,6 +10,16 @@ interface PlayerSelectionProps {
 }
 
 export function PlayerSelection({ players, onPlayerChange, sessionStart, sessionEnd }: PlayerSelectionProps) {
+  // Add effect to update full session players when session times change
+  useEffect(() => {
+    const updatedPlayers = players.map(player => ({
+      ...player,
+      startTime: player.isFullSession ? sessionStart : player.startTime,
+      endTime: player.isFullSession ? sessionEnd : player.endTime
+    }));
+    onPlayerChange(updatedPlayers);
+  }, [sessionStart, sessionEnd]);
+
   const handleParticipationChange = (index: number) => {
     const newPlayers = [...players];
     const player = newPlayers[index];
@@ -18,6 +29,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
     if (player.participated) {
       player.startTime = sessionStart || '';
       player.endTime = sessionEnd || '';
+      player.isFullSession = true; // Enable full session by default
     } else {
       player.startTime = '';
       player.endTime = '';
