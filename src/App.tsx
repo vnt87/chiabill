@@ -54,6 +54,13 @@ function App() {
     localStorage.setItem('darkMode', isDarkMode.toString());
   }, [isDarkMode]);
 
+  // Initialize theme (typically in a useEffect or similar)
+  useEffect(() => {
+    if (!localStorage.getItem('theme')) {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
+
   // Update all participating players' times when session times change
   useEffect(() => {
     if (billData.sessionStart || billData.sessionEnd) {
@@ -156,7 +163,7 @@ function App() {
         </div>
       </div>
       <footer className="mt-8 py-4 text-center text-xs text-gray-500 dark:text-gray-400">
-        Crafted with <Heart size={12} className="inline text-red-500" /> by Nash Billiard Club
+        Crafted with <Heart size={12} className="inline text-red-500" /> by Nam Vu
       </footer>
     </div>
   );

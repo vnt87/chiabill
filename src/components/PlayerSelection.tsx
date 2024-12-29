@@ -1,5 +1,7 @@
 import { Player } from '../types';
-import { Switch } from '@headlessui/react';
+import * as Switch from '@radix-ui/react-switch';
+import * as Checkbox from '@radix-ui/react-checkbox';
+import { CheckIcon } from 'lucide-react';
 import { useEffect } from 'react';
 
 interface PlayerSelectionProps {
@@ -66,31 +68,28 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
         {players.map((player, index) => (
           <div key={player.name} className="flex flex-col space-y-2 p-3 bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700">
             <div className="flex items-center">
-              <input
-                type="checkbox"
+              <Checkbox.Root
                 checked={player.participated}
-                onChange={() => handleParticipationChange(index)}
-                className="h-4 w-4 text-indigo-600 rounded dark:bg-gray-700"
-              />
+                onCheckedChange={() => handleParticipationChange(index)}
+                className="h-4 w-4 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded flex items-center justify-center"
+              >
+                <Checkbox.Indicator>
+                  <CheckIcon className="h-3 w-3 text-indigo-600" />
+                </Checkbox.Indicator>
+              </Checkbox.Root>
               <span className="ml-2 text-gray-700 dark:text-gray-300">{player.name}</span>
             </div>
             {player.participated && (
               <>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600 dark:text-gray-400">Full Session</span>
-                  <Switch
+                  <Switch.Root
                     checked={player.isFullSession || false}
-                    onChange={() => handleFullSessionChange(index)}
-                    className={`${
-                      player.isFullSession ? 'bg-indigo-600' : 'bg-gray-200 dark:bg-gray-600'
-                    } relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none`}
+                    onCheckedChange={() => handleFullSessionChange(index)}
+                    className="w-11 h-6 bg-gray-200 dark:bg-gray-600 rounded-full relative data-[state=checked]:bg-indigo-600 outline-none"
                   >
-                    <span
-                      className={`${
-                        player.isFullSession ? 'translate-x-6' : 'translate-x-1'
-                      } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                    />
-                  </Switch>
+                    <Switch.Thumb className="block w-4 h-4 bg-white rounded-full transition-transform duration-100 translate-x-1 data-[state=checked]:translate-x-6" />
+                  </Switch.Root>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
