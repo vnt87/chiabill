@@ -10,6 +10,10 @@ A simple web application to help split billiard game bills among players. Perfec
 - Supports different game types and durations
 - Mobile-friendly interface
 
+## Demo
+
+Check out the live demo: [NT Billiard Bill Splitter](https://chiabill.pages.dev)
+
 ## Installation
 
 1. Clone the repository:
