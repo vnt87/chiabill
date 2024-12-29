@@ -1,11 +1,14 @@
 import { BillData, Player } from '../types';
 import { differenceInMinutes, parse } from 'date-fns';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface BillSummaryProps {
   data: BillData;
 }
 
 export function BillSummary({ data }: BillSummaryProps) {
+  const { t } = useLanguage();
+
   const calculateTotalTime = () => {
     if (!data.sessionStart || !data.sessionEnd) return 0;
     const start = parse(data.sessionStart, 'HH:mm', new Date());
@@ -57,26 +60,26 @@ export function BillSummary({ data }: BillSummaryProps) {
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg space-y-4">
-      <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Bill Summary</h2>
+      <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{t.billSummary}</h2>
       
       <div className="space-y-3">
         <div className="flex justify-between items-center">
-          <span className="text-gray-600 dark:text-gray-400">Session Duration</span>
-          <span className="font-medium dark:text-white">{totalTime} minutes</span>
+          <span className="text-gray-600 dark:text-gray-400">{t.sessionDuration}</span>
+          <span className="font-medium dark:text-white">{totalTime} {t.minutes}</span>
         </div>
         
         <div className="flex justify-between items-center">
-          <span className="text-gray-600 dark:text-gray-400">Number of Participants</span>
+          <span className="text-gray-600 dark:text-gray-400">{t.numberOfParticipants}</span>
           <span className="font-medium dark:text-white">{participatingPlayers.length}</span>
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-gray-600 dark:text-gray-400">Base Amount</span>
+          <span className="text-gray-600 dark:text-gray-400">{t.baseAmount}</span>
           <span className="font-medium dark:text-white">{formatCurrency(data.totalAmount)}</span>
         </div>
 
         <div className="pt-3 border-t dark:border-gray-700">
-          <h3 className="font-semibold text-gray-700 dark:text-white mb-2">Individual Breakdown</h3>
+          <h3 className="font-semibold text-gray-700 dark:text-white mb-2">{t.individualBreakdown}</h3>
           {participatingPlayers.map(player => {
             const playerShare = calculatePlayerShare(player);
             const playerTime = calculatePlayerTime(player);

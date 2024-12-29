@@ -3,7 +3,8 @@ import './index.css';
 import { PlayerSelection } from './components/PlayerSelection';
 import { BillSummary } from './components/BillSummary';
 import { Player, BillData } from './types';
-import { Sun, Moon, Heart } from 'lucide-react';
+import { Sun, Moon, Heart, Languages } from 'lucide-react';
+import { useLanguage, translations } from './contexts/LanguageContext';
 
 const initialPlayers: Player[] = [
   "Nam", "Chung", "Huy", "Tính", "Hiếu", "Tuấn"
@@ -17,6 +18,7 @@ const initialPlayers: Player[] = [
 }));
 
 function App() {
+  const { t, language, setLanguage } = useLanguage();
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {
       const savedMode = localStorage.getItem('darkMode');
@@ -71,7 +73,9 @@ function App() {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-6 flex flex-col">
       <div className="w-[95%] sm:w-[90%] max-w-[1200px] mx-auto px-2 sm:px-4 flex-grow">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Billiard Bill Splitter</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+            {t.title}
+          </h1>
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
             className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
@@ -86,7 +90,7 @@ function App() {
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Total Amount
+                  {t.totalAmount}
                 </label>
                 <input
                   type="number"
@@ -98,16 +102,16 @@ function App() {
                     totalAmount: parseFloat(e.target.value) || 0
                   })}
                   onFocus={(e) => e.target.placeholder = ''}
-                  onBlur={(e) => e.target.placeholder = 'Total amount'}
+                  onBlur={(e) => e.target.placeholder = t.placeholder.totalAmount}
                   className="w-full border rounded-md p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  placeholder="Total amount"
+                  placeholder={t.placeholder.totalAmount}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Session Start
+                    {t.sessionStart}
                   </label>
                   <input
                     type="time"
@@ -122,7 +126,7 @@ function App() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Session End
+                    {t.sessionEnd}
                   </label>
                   <input
                     type="time"
@@ -152,8 +156,17 @@ function App() {
           </div>
         </div>
       </div>
-      <footer className="mt-8 py-4 text-center text-xs text-gray-500 dark:text-gray-400">
-        Crafted with <Heart size={12} className="inline text-red-500" /> by Nam Vu
+      
+      <footer className="mt-8 space-y-2 text-center">
+        <button
+          onClick={() => setLanguage(language === 'en' ? 'vi' : 'en')}
+          className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+        >
+          {language === 'en' ? translations.vi.languageName : translations.en.languageName}
+        </button>
+        <div className="py-2 text-xs text-gray-500 dark:text-gray-400">
+          Crafted with <Heart size={12} className="inline text-red-500" /> by Nam Vu
+        </div>
       </footer>
     </div>
   );

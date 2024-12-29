@@ -4,6 +4,7 @@ import * as Switch from '@radix-ui/react-switch';
 import * as Select from '@radix-ui/react-select';
 import { ChevronDownIcon } from 'lucide-react';
 import { useEffect } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface PlayerSelectionProps {
   players: Player[];
@@ -13,6 +14,8 @@ interface PlayerSelectionProps {
 }
 
 export function PlayerSelection({ players, onPlayerChange, sessionStart, sessionEnd }: PlayerSelectionProps) {
+  const { t } = useLanguage();
+
   // Add effect to update full session players when session times change
   useEffect(() => {
     const updatedPlayers = players.map(player => ({
@@ -88,7 +91,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm space-y-4">
-      <h3 className="font-semibold text-gray-700 dark:text-gray-300">Players</h3>
+      <h3 className="font-semibold text-gray-700 dark:text-gray-300">{t.players}</h3>
       <div className="space-y-4">
         {players.map((player, index) => (
           <div key={player.name} className="space-y-3">
@@ -105,7 +108,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
             {player.participated && (
               <div className="pl-6 space-y-3">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm text-gray-600 dark:text-gray-400">Full Session</label>
+                  <label className="text-sm text-gray-600 dark:text-gray-400">{t.fullSession}</label>
                   <Switch.Root
                     checked={player.isFullSession}
                     onCheckedChange={() => handleFullSessionToggle(index)}
@@ -118,7 +121,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                 {!player.isFullSession && (
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm text-gray-600 dark:text-gray-400">Start Time</label>
+                      <label className="block text-sm text-gray-600 dark:text-gray-400">{t.startTime}</label>
                       <input
                         type="time"
                         value={player.startTime}
@@ -127,7 +130,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-600 dark:text-gray-400">End Time</label>
+                      <label className="block text-sm text-gray-600 dark:text-gray-400">{t.endTime}</label>
                       <input
                         type="time"
                         value={player.endTime}
@@ -141,7 +144,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                 {/* Additional Items Section */}
                 <div className="space-y-2 w-full">
                   <div className="flex justify-between items-center">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Additional Items</label>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{t.additionalItems}</label>
                     <button
                       onClick={() => addConsumable(index)}
                       className="p-1 text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
@@ -153,7 +156,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                   {player.consumables?.map((item, itemIndex) => (
                     <div key={itemIndex} className="grid grid-cols-12 gap-2 items-end w-full">
                       <div className="col-span-5">
-                        <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">Item</label>
+                        <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">{t.item}</label>
                         <Select.Root
                           value={item.name}
                           onValueChange={(value) => {
@@ -190,7 +193,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                       </div>
 
                       <div className="col-span-3">
-                        <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">Quantity</label>
+                        <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">{t.quantity}</label>
                         <input
                           type="number"
                           min="1"
@@ -201,7 +204,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                       </div>
 
                       <div className="col-span-3">
-                        <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">Cost (k)</label>
+                        <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">{t.cost}</label>
                         <input
                           type="number"
                           min="0"
