@@ -45,18 +45,6 @@ function App() {
     consumables: []
   });
 
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDarkMode);
-    localStorage.setItem('darkMode', isDarkMode.toString());
-  }, [isDarkMode]);
-
-  // Initialize theme (typically in a useEffect or similar)
-  useEffect(() => {
-    if (!localStorage.getItem('theme')) {
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
-
   // Update all participating players' times when session times change
   useEffect(() => {
     if (billData.sessionStart || billData.sessionEnd) {
