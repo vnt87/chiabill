@@ -43,7 +43,22 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
 
   const handleTimeChange = (index: number, field: 'startTime' | 'endTime', value: string) => {
     const newPlayers = [...players];
-    newPlayers[index][field] = value;
+    const player = newPlayers[index];
+    
+    if (field === 'startTime') {
+      // Ensure start time is within session bounds and not after end time
+      if (value < sessionStart) value = sessionStart;
+      if (value > sessionEnd) value = sessionEnd;
+      if (player.endTime && value > player.endTime) value = player.endTime;
+      player.startTime = value;
+    } else {
+      // Ensure end time is within session bounds and not before start time
+      if (value < sessionStart) value = sessionStart;
+      if (value > sessionEnd) value = sessionEnd;
+      if (player.startTime && value < player.startTime) value = player.startTime;
+      player.endTime = value;
+    }
+    
     onPlayerChange(newPlayers);
   };
 
@@ -125,6 +140,8 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                       <input
                         type="time"
                         value={player.startTime}
+                        min={sessionStart}
+                        max={player.endTime || sessionEnd}
                         onChange={(e) => handleTimeChange(index, 'startTime', e.target.value)}
                         className="mt-1 block w-full border rounded-md p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                       />
@@ -134,6 +151,8 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                       <input
                         type="time"
                         value={player.endTime}
+                        min={player.startTime || sessionStart}
+                        max={sessionEnd}
                         onChange={(e) => handleTimeChange(index, 'endTime', e.target.value)}
                         className="mt-1 block w-full border rounded-md p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                       />

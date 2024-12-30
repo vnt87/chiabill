@@ -117,10 +117,20 @@ function App() {
                     type="time"
                     step="60"
                     value={billData.sessionStart}
-                    onChange={(e) => setBillData({
-                      ...billData,
-                      sessionStart: e.target.value
-                    })}
+                    onChange={(e) => {
+                      const newStart = e.target.value;
+                      if (billData.sessionEnd && newStart > billData.sessionEnd) {
+                        setBillData({
+                          ...billData,
+                          sessionStart: billData.sessionEnd
+                        });
+                      } else {
+                        setBillData({
+                          ...billData,
+                          sessionStart: newStart
+                        });
+                      }
+                    }}
                     className="w-full border rounded-md p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   />
                 </div>
@@ -132,10 +142,21 @@ function App() {
                     type="time"
                     step="60"
                     value={billData.sessionEnd}
-                    onChange={(e) => setBillData({
-                      ...billData,
-                      sessionEnd: e.target.value
-                    })}
+                    min={billData.sessionStart || undefined}
+                    onChange={(e) => {
+                      const newEnd = e.target.value;
+                      if (billData.sessionStart && newEnd < billData.sessionStart) {
+                        setBillData({
+                          ...billData,
+                          sessionEnd: billData.sessionStart
+                        });
+                      } else {
+                        setBillData({
+                          ...billData,
+                          sessionEnd: newEnd
+                        });
+                      }
+                    }}
                     className="w-full border rounded-md p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   />
                 </div>
