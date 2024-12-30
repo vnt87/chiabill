@@ -3,7 +3,7 @@ import './index.css';
 import { PlayerSelection } from './components/PlayerSelection';
 import { BillSummary } from './components/BillSummary';
 import { Player, BillData } from './types';
-import { Sun, Moon, Heart, Languages } from 'lucide-react';
+import { Sun, Moon, Heart, Languages, Github } from 'lucide-react';
 import { useLanguage, translations } from './contexts/LanguageContext';
 
 const initialPlayers: Player[] = [
@@ -175,6 +175,15 @@ function App() {
         </button>
         <div className="py-2 text-xs text-gray-500 dark:text-gray-400">
           Crafted with <Heart size={12} className="inline text-red-500" /> by Nam Vu
+          {' • '}
+          <a 
+            href="https://github.com/vnt87/Billbill" 
+            className="hover:text-gray-600 dark:hover:text-gray-300"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Github size={12} className="inline" /> Source Code
+          </a>
         </div>
       </footer>
     </div>
