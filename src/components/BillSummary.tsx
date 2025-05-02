@@ -2,7 +2,7 @@ import { BillData, Player } from '../types';
 import { differenceInMinutes, parse } from 'date-fns';
 import { useLanguage } from '../contexts/LanguageContext';
 import html2canvas from 'html2canvas';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 
 interface BillSummaryProps {
   data: BillData;
@@ -11,11 +11,17 @@ interface BillSummaryProps {
 export function BillSummary({ data }: BillSummaryProps) {
   const { t } = useLanguage();
   const summaryRef = useRef<HTMLDivElement>(null);
+  const exportButtonRef = useRef<HTMLButtonElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
 
   const handleExport = async () => {
-    if (!summaryRef.current) return;
+    if (!summaryRef.current || !exportButtonRef.current || !footerRef.current) return;
     
     try {
+      // Hide button and show footer
+      exportButtonRef.current.style.display = 'none';
+      footerRef.current.style.display = 'block';
+
       const canvas = await html2canvas(summaryRef.current, {
         background: window.getComputedStyle(document.body).backgroundColor,
       });
@@ -34,6 +40,12 @@ export function BillSummary({ data }: BillSummaryProps) {
       link.click();
     } catch (error) {
       console.error('Error exporting bill summary:', error);
+    } finally {
+      // Restore original visibility
+      if (exportButtonRef.current && footerRef.current) {
+        exportButtonRef.current.style.display = 'block';
+        footerRef.current.style.display = 'none';
+      }
     }
   };
 
@@ -142,12 +154,20 @@ export function BillSummary({ data }: BillSummaryProps) {
           })}
       </div>
       <button
+        ref={exportButtonRef}
         onClick={handleExport}
         disabled={!data.totalAmount || data.totalAmount <= 0}
         className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-600"
       >
         {t.exportAsImage}
       </button>
+      <div
+        ref={footerRef}
+        className="hidden text-xs text-center mt-4 text-gray-500 dark:text-gray-400"
+      >
+        Generated with<br />
+        <span className="text-blue-600 dark:text-blue-400">https://chiabill.pages.dev</span>
+      </div>
     </div>
     </div>
   );
