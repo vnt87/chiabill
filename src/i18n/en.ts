@@ -20,5 +20,6 @@ export const en = {
   languageName: '🇺🇸 English',
   placeholder: {
     totalAmount: 'Enter total amount'
-  }
+  },
+  exportAsImage: 'Export as Image'
 };

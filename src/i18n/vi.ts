@@ -20,5 +20,6 @@ export const vi = {
   languageName: '🇻🇳 Tiếng Việt',
   placeholder: {
     totalAmount: 'Nhập tổng tiền'
-  }
+  },
+  exportAsImage: 'Xuất Thành Ảnh'
 };

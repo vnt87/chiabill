@@ -1,6 +1,8 @@
 import { BillData, Player } from '../types';
 import { differenceInMinutes, parse } from 'date-fns';
 import { useLanguage } from '../contexts/LanguageContext';
+import html2canvas from 'html2canvas';
+import { useRef } from 'react';
 
 interface BillSummaryProps {
   data: BillData;
@@ -8,6 +10,32 @@ interface BillSummaryProps {
 
 export function BillSummary({ data }: BillSummaryProps) {
   const { t } = useLanguage();
+  const summaryRef = useRef<HTMLDivElement>(null);
+
+  const handleExport = async () => {
+    if (!summaryRef.current) return;
+    
+    try {
+      const canvas = await html2canvas(summaryRef.current, {
+        background: window.getComputedStyle(document.body).backgroundColor,
+      });
+      
+      // Format current date as MMDDYYYY
+      const now = new Date();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const year = now.getFullYear();
+      const dateString = `${month}${day}${year}`;
+      
+      const image = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = image;
+      link.download = `bill-summary-${dateString}.png`;
+      link.click();
+    } catch (error) {
+      console.error('Error exporting bill summary:', error);
+    }
+  };
 
   const calculateTotalTime = () => {
     if (!data.sessionStart || !data.sessionEnd) return 0;
@@ -35,9 +63,6 @@ export function BillSummary({ data }: BillSummaryProps) {
   };
 
   const calculatePlayerShare = (player: Player): number => {
-    const playerTime = calculatePlayerTime(player);
-    if (totalPlayerMinutes === 0) return 0;
-    
     // Calculate total consumables cost for all players
     const totalConsumablesCost = participatingPlayers.reduce((sum, p) => 
       sum + calculatePlayerConsumables(p), 0);
@@ -45,13 +70,19 @@ export function BillSummary({ data }: BillSummaryProps) {
     // The base amount should be total amount minus consumables
     const baseAmount = Math.max(0, data.totalAmount - totalConsumablesCost);
     
-    // Base amount share based on time
-    const baseShare = (baseAmount * playerTime) / totalPlayerMinutes;
-    
-    // Add player's own consumables
+    // Get player's consumables cost
     const playerConsumables = calculatePlayerConsumables(player);
     
-    return baseShare + playerConsumables;
+    // If we have valid time data, use time-based calculation
+    if (totalPlayerMinutes > 0) {
+      const playerTime = calculatePlayerTime(player);
+      const baseShare = (baseAmount * playerTime) / totalPlayerMinutes;
+      return baseShare + playerConsumables;
+    }
+    
+    // If no valid time data, split base amount equally
+    const equalShare = baseAmount / participatingPlayers.length;
+    return equalShare + playerConsumables;
   };
 
   const formatCurrency = (amount: number): string => {
@@ -59,7 +90,7 @@ export function BillSummary({ data }: BillSummaryProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg space-y-4">
+    <div ref={summaryRef} className="bg-white dark:bg-gray-800 p-6 rounded-lg space-y-4">
       <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{t.billSummary}</h2>
       
       <div className="space-y-3">
@@ -89,7 +120,8 @@ export function BillSummary({ data }: BillSummaryProps) {
               <div key={player.name} className="py-1">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600 dark:text-gray-400">
-                    {player.name} ({playerTime} mins)
+                    {player.name}
+                    {totalPlayerMinutes > 0 && ` (${playerTime} mins)`}
                   </span>
                   <span className="font-medium text-indigo-600 dark:text-indigo-400">
                     {formatCurrency(playerShare)}
@@ -108,8 +140,15 @@ export function BillSummary({ data }: BillSummaryProps) {
               </div>
             );
           })}
-        </div>
       </div>
+      <button
+        onClick={handleExport}
+        disabled={!data.totalAmount || data.totalAmount <= 0}
+        className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-600"
+      >
+        {t.exportAsImage}
+      </button>
+    </div>
     </div>
   );
 }
