@@ -5,3 +5,4 @@ dist
 _worker.js
 wrangler.toml
 .gitignore
+/.env
