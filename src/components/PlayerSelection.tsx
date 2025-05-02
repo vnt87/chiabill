@@ -1,4 +1,4 @@
-import { Player, ConsumableItem, PREDEFINED_ITEMS } from '../types';
+import { Player, ConsumableItem, PREDEFINED_ITEMS, PredefinedItemName } from '../types';
 import { PlusIcon, MinusIcon } from 'lucide-react';
 import * as Switch from '@radix-ui/react-switch';
 import * as Select from '@radix-ui/react-select';
@@ -75,7 +75,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
   const addConsumable = (playerIndex: number) => {
     const newPlayers = [...players];
     const newConsumable: ConsumableItem = {
-      name: "",
+      name: "Coke", // Default to first predefined item instead of empty string
       quantity: 1,
       costPerUnit: 0
     };
@@ -94,7 +94,17 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
     value: string | number
   ) => {
     const newPlayers = [...players];
-    newPlayers[playerIndex].consumables[consumableIndex][field] = value;
+    const consumable = newPlayers[playerIndex].consumables[consumableIndex];
+    
+    switch(field) {
+      case 'name':
+        consumable.name = value as PredefinedItemName;
+        break;
+      case 'quantity':
+      case 'costPerUnit':
+        consumable[field] = value as number;
+        break;
+    }
     onPlayerChange(newPlayers);
   };
 

@@ -3,7 +3,7 @@ import './index.css';
 import { PlayerSelection } from './components/PlayerSelection';
 import { BillSummary } from './components/BillSummary';
 import { Player, BillData } from './types';
-import { Sun, Moon, Heart, Languages, Github } from 'lucide-react';
+import { Sun, Moon, Heart, Github } from 'lucide-react';
 import { useLanguage, translations } from './contexts/LanguageContext';
 
 const initialPlayers: Player[] = [
@@ -41,8 +41,7 @@ function App() {
     totalAmount: 0,
     sessionStart: '',
     sessionEnd: '',
-    players: initialPlayers,
-    consumables: []
+    players: initialPlayers
   });
 
   // Update all participating players' times when session times change

@@ -18,11 +18,21 @@ export function ConsumableItems({ items, players, onItemsChange }: ConsumableIte
 
   const handleValueChange = (
     index: number,
-    field: keyof Pick<ConsumableItem, 'quantity' | 'costPerUnit' | 'assignedPlayer'>,
-    value: ConsumableItem[typeof field]
+    field: 'quantity' | 'costPerUnit' | 'assignedPlayer',
+    value: number | string
   ) => {
     const newItems = [...items];
-    newItems[index][field] = value;
+    const item = newItems[index];
+    
+    switch(field) {
+      case 'quantity':
+      case 'costPerUnit':
+        item[field] = value as number;
+        break;
+      case 'assignedPlayer':
+        item.assignedPlayer = value as string;
+        break;
+    }
     onItemsChange(newItems);
   };
 

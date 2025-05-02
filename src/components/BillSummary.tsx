@@ -2,7 +2,7 @@ import { BillData, Player } from '../types';
 import { differenceInMinutes, parse } from 'date-fns';
 import { useLanguage } from '../contexts/LanguageContext';
 import html2canvas from 'html2canvas';
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 
 interface BillSummaryProps {
   data: BillData;

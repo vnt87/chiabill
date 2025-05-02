@@ -2,6 +2,8 @@ export interface ConsumableItem {
   name: PredefinedItemName;
   quantity: number;
   costPerUnit: number;
+  selected?: boolean;
+  assignedPlayer?: string;
 }
 
 export interface Player {
@@ -9,7 +11,8 @@ export interface Player {
   participated: boolean;
   startTime: string;
   endTime: string;
-  consumables: ConsumableItem[]; // New field
+  consumables: ConsumableItem[];
+  isFullSession: boolean;
 }
 
 export interface BillData {
