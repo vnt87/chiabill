@@ -1,4 +1,4 @@
-# NT Billiard Bill Splitter
+# NashTech Bill Splitter
 
 Tool tính tiền chơi bi a cho mấy ae club NashTech, rảnh háng nên làm trong 1 buổi chiều
 
