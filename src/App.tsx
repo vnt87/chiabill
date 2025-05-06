@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './index.css';
 import { PlayerSelection } from './components/PlayerSelection';
 import { BillSummary } from './components/BillSummary';
@@ -43,16 +43,25 @@ function App() {
     sessionEnd: '',
     players: initialPlayers
   });
+  const [totalAmountInput, setTotalAmountInput] = useState(billData.totalAmount.toString());
+  const totalAmountInputRef = useRef<HTMLInputElement>(null);
+
+  // Synchronize totalAmountInput with billData.totalAmount when it changes from outside
+  useEffect(() => {
+    if (document.activeElement !== totalAmountInputRef.current) {
+      setTotalAmountInput(billData.totalAmount.toString());
+    }
+  }, [billData.totalAmount]);
 
   // Update all participating players' times when session times change
   useEffect(() => {
     if (billData.sessionStart || billData.sessionEnd) {
-      const updatedPlayers = billData.players.map(player => ({
+      const updatedPlayers = billData.players.map((player: Player) => ({
         ...player,
         startTime: player.participated ? (player.startTime || billData.sessionStart) : player.startTime,
         endTime: player.participated ? (player.endTime || billData.sessionEnd) : player.endTime,
       }));
-      setBillData(prev => ({ ...prev, players: updatedPlayers }));
+      setBillData((prev: BillData) => ({ ...prev, players: updatedPlayers }));
     }
   }, [billData.sessionStart, billData.sessionEnd]);
 
@@ -80,16 +89,38 @@ function App() {
                   {t.totalAmount}
                 </label>
                 <input
+                  ref={totalAmountInputRef}
                   type="number"
                   min="0"
                   step="1"
-                  value={billData.totalAmount}
-                  onChange={(e) => setBillData({
-                    ...billData,
-                    totalAmount: parseFloat(e.target.value) || 0
-                  })}
-                  onFocus={(e) => e.target.placeholder = ''}
-                  onBlur={(e) => e.target.placeholder = t.placeholder.totalAmount}
+                  value={totalAmountInput}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const val = e.target.value;
+                    setTotalAmountInput(val);
+                    const parsed = parseFloat(val);
+                    if (!isNaN(parsed) && parsed >= 0) {
+                      setBillData({ ...billData, totalAmount: parsed });
+                    } else if (val === '') {
+                      setBillData({ ...billData, totalAmount: 0 });
+                    }
+                  }}
+                  onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
+                    if (billData.totalAmount === 0 && e.target.value === '0') {
+                      setTotalAmountInput('');
+                    }
+                    e.target.placeholder = '';
+                  }}
+                  onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                    const parsed = parseFloat(totalAmountInput);
+                    if (isNaN(parsed) || parsed < 0) {
+                      setTotalAmountInput('0');
+                      setBillData({ ...billData, totalAmount: 0 });
+                    } else {
+                      setTotalAmountInput(parsed.toString());
+                      setBillData({ ...billData, totalAmount: parsed });
+                    }
+                    e.target.placeholder = t.placeholder.totalAmount;
+                  }}
                   className="w-full border rounded-md p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   placeholder={t.placeholder.totalAmount}
                 />
@@ -104,7 +135,7 @@ function App() {
                     type="time"
                     step="60"
                     value={billData.sessionStart}
-                    onChange={(e) => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       const newStart = e.target.value;
                       if (billData.sessionEnd && newStart > billData.sessionEnd) {
                         setBillData({
@@ -130,7 +161,7 @@ function App() {
                     step="60"
                     value={billData.sessionEnd}
                     min={billData.sessionStart || undefined}
-                    onChange={(e) => {
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       const newEnd = e.target.value;
                       if (billData.sessionStart && newEnd < billData.sessionStart) {
                         setBillData({
