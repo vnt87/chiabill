@@ -3,7 +3,7 @@ import { PlusIcon, MinusIcon } from 'lucide-react';
 import * as Switch from '@radix-ui/react-switch';
 import * as Select from '@radix-ui/react-select';
 import { ChevronDownIcon } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface PlayerSelectionProps {
@@ -11,9 +11,13 @@ interface PlayerSelectionProps {
   onPlayerChange: (players: Player[]) => void;
   sessionStart: string;
   sessionEnd: string;
+  onAddPlayer: () => void;
+  onRemovePlayer: (playerIndex: number) => void;
 }
 
-export function PlayerSelection({ players, onPlayerChange, sessionStart, sessionEnd }: PlayerSelectionProps) {
+import { XIcon } from 'lucide-react';
+
+export function PlayerSelection({ players, onPlayerChange, sessionStart, sessionEnd, onAddPlayer, onRemovePlayer }: PlayerSelectionProps) {
   const { t } = useLanguage();
 
   // Add effect to update full session players when session times change
@@ -25,6 +29,13 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
     }));
     onPlayerChange(updatedPlayers);
   }, [sessionStart, sessionEnd]);
+
+  // Handler to update player name
+  const handlePlayerNameChange = (index: number, newName: string) => {
+    const newPlayers = [...players];
+    newPlayers[index].name = newName;
+    onPlayerChange(newPlayers);
+  };
 
   const handlePlayerToggle = (index: number) => {
     const newPlayers = [...players];
@@ -114,12 +125,33 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
     onPlayerChange(newPlayers);
   };
 
+  const [editingPlayerIndex, setEditingPlayerIndex] = useState<number | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Focus the input when it appears
+  useEffect(() => {
+    if (editingPlayerIndex !== null && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [editingPlayerIndex]);
+
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm space-y-4">
-      <h3 className="font-semibold text-gray-700 dark:text-gray-300">{t.players}</h3>
+      <div className="flex items-center justify-between">
+        <h3 className="font-semibold text-gray-700 dark:text-gray-300">{t.players}</h3>
+        <button
+          type="button"
+          onClick={onAddPlayer}
+          className="px-3 py-1 rounded bg-indigo-600 text-white text-sm hover:bg-indigo-700 flex items-center gap-1"
+          aria-label={t.addPlayerButtonLabel}
+        >
+          <PlusIcon className="w-4 h-4" />
+          {t.addPlayerButton}
+        </button>
+      </div>
       <div className="space-y-4">
         {players.map((player, index) => (
-          <div key={player.name} className="space-y-3">
+          <div key={player.id || index} className="space-y-3">
             <div className="flex items-center">
               <input
                 type="checkbox"
@@ -127,7 +159,41 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                 onChange={() => handlePlayerToggle(index)}
                 className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
               />
-              <span className="ml-2 text-gray-700 dark:text-gray-300">{player.name}</span>
+              {editingPlayerIndex === index ? (
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={player.name}
+                  onChange={e => handlePlayerNameChange(index, e.target.value)}
+                  onBlur={() => setEditingPlayerIndex(null)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') setEditingPlayerIndex(null);
+                  }}
+                  className="ml-2 px-2 py-1 border rounded text-gray-700 dark:text-gray-300 dark:bg-gray-700 dark:border-gray-600"
+                  style={{ maxWidth: 160 }}
+                />
+              ) : (
+                <span
+                  className="ml-2 px-2 py-1 cursor-pointer"
+                  onClick={() => setEditingPlayerIndex(index)}
+                  tabIndex={0}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' || e.key === ' ') setEditingPlayerIndex(index);
+                  }}
+                  role="button"
+                  aria-label={t.addPlayerButtonLabel}
+                >
+                  {player.name}
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={() => onRemovePlayer(index)}
+                className="ml-2 p-1 rounded hover:bg-red-100 dark:hover:bg-red-900"
+                aria-label={t.removePlayerButtonLabel}
+              >
+                <XIcon className="w-4 h-4 text-red-500" />
+              </button>
             </div>
 
             {player.participated && (
@@ -193,7 +259,13 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                             updateConsumable(index, itemIndex, 'name', value);
                             if (predefinedItem) {
                               updateConsumable(index, itemIndex, 'costPerUnit', predefinedItem.costPerUnit);
-                            }
+  // Handler to update player name
+  const handlePlayerNameChange = (index: number, newName: string) => {
+    const newPlayers = [...players];
+    newPlayers[index].name = newName;
+    onPlayerChange(newPlayers);
+  };
+}
                           }}
                         >
                           <Select.Trigger className="w-full flex justify-between items-center px-3 py-2 text-sm border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">

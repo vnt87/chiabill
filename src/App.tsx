@@ -6,9 +6,11 @@ import { Player, BillData } from './types';
 import { Sun, Moon, Heart, Github } from 'lucide-react';
 import { useLanguage, translations } from './contexts/LanguageContext';
 
+let playerIdCounter = 1;
 const initialPlayers: Player[] = [
   "Nam", "Chung", "Huy", "Tính", "Hiếu", "Tuấn"
 ].map(name => ({
+  id: `player-${playerIdCounter++}`,
   name,
   participated: false,
   startTime: '',
@@ -43,6 +45,36 @@ function App() {
     sessionEnd: '',
     players: initialPlayers
   });
+
+  // Track guest player count for unique default names
+  const [guestPlayerCount, setGuestPlayerCount] = useState(1);
+
+  // Handler to add a new guest player
+  const handleAddPlayer = () => {
+    const guestName = `Guest ${guestPlayerCount}`;
+    const newPlayer: Player = {
+      id: `player-${playerIdCounter++}`,
+      name: guestName,
+      participated: false,
+      startTime: '',
+      endTime: '',
+      consumables: [],
+      isFullSession: true
+    };
+    setBillData(prev => ({
+      ...prev,
+      players: [...prev.players, newPlayer]
+    }));
+    setGuestPlayerCount(count => count + 1);
+  };
+
+  // Handler to remove a player by index
+  const handleRemovePlayer = (playerIndex: number) => {
+    setBillData(prev => ({
+      ...prev,
+      players: prev.players.filter((_, idx) => idx !== playerIndex)
+    }));
+  };
   const [totalAmountInput, setTotalAmountInput] = useState(billData.totalAmount.toString());
   const totalAmountInputRef = useRef<HTMLInputElement>(null);
 
@@ -186,6 +218,8 @@ function App() {
               onPlayerChange={(players) => setBillData({ ...billData, players })}
               sessionStart={billData.sessionStart}
               sessionEnd={billData.sessionEnd}
+              onAddPlayer={handleAddPlayer}
+              onRemovePlayer={handleRemovePlayer}
             />
           </div>
 

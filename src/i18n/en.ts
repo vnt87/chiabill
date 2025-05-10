@@ -1,5 +1,8 @@
 export const en = {
   title: 'Billiard Bill Splitter',
+  addPlayerButton: 'Add Additional Player',
+  addPlayerButtonLabel: 'Add new player',
+  removePlayerButtonLabel: 'Remove player',
   totalAmount: 'Total Amount',
   sessionStart: 'Session Start',
   sessionEnd: 'Session End',

@@ -1,5 +1,8 @@
 export const vi = {
   title: 'Tính Tiền Bi-a',
+  addPlayerButton: 'Thêm người chơi',
+  addPlayerButtonLabel: 'Thêm người chơi mới',
+  removePlayerButtonLabel: 'Xóa người chơi',
   totalAmount: 'Tổng Tiền',
   sessionStart: 'Giờ Bắt Đầu',
   sessionEnd: 'Giờ Kết Thúc',

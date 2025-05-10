@@ -7,6 +7,7 @@ export interface ConsumableItem {
 }
 
 export interface Player {
+  id?: string;
   name: string;
   participated: boolean;
   startTime: string;
