@@ -1,7 +1,6 @@
 import { Player, ConsumableItem, PREDEFINED_ITEMS, PredefinedItemName } from '../types';
 import { PlusIcon, MinusIcon } from 'lucide-react';
 import * as Switch from '@radix-ui/react-switch';
-import * as Select from '@radix-ui/react-select';
 import { ChevronDownIcon } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -85,12 +84,15 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
 
   const addConsumable = (playerIndex: number) => {
     const newPlayers = [...players];
+    const id = `item-${Date.now()}-${Math.floor(Math.random() * 100000)}`;
+    const defaultItem = PREDEFINED_ITEMS[0];
     const newConsumable: ConsumableItem = {
-      name: "Coke", // Default to first predefined item instead of empty string
+      id,
+      name: defaultItem.name,
       quantity: 1,
-      costPerUnit: 0
+      costPerUnit: defaultItem.costPerUnit
     };
-    
+
     if (!newPlayers[playerIndex].consumables) {
       newPlayers[playerIndex].consumables = [];
     }
@@ -128,12 +130,22 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
   const [editingPlayerIndex, setEditingPlayerIndex] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // State for editing item name
+  const [editingItemName, setEditingItemName] = useState<{ playerIndex: number; itemIndex: number } | null>(null);
+  const itemInputRef = useRef<HTMLInputElement>(null);
+
   // Focus the input when it appears
   useEffect(() => {
     if (editingPlayerIndex !== null && inputRef.current) {
       inputRef.current.focus();
     }
   }, [editingPlayerIndex]);
+
+  useEffect(() => {
+    if (editingItemName && itemInputRef.current) {
+      itemInputRef.current.focus();
+    }
+  }, [editingItemName]);
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm space-y-4">
@@ -249,42 +261,33 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                   </div>
                   
                   {player.consumables?.map((item, itemIndex) => (
-                    <div key={itemIndex} className="grid grid-cols-12 gap-2 items-end w-full">
+                    <div key={item.id} className="grid grid-cols-12 gap-2 items-end w-full">
                       <div className="col-span-5">
                         <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">{t.item}</label>
-                        <Select.Root
-                          value={item.name}
-                          onValueChange={(value) => {
-                            const predefinedItem = PREDEFINED_ITEMS.find(i => i.name === value);
-                            updateConsumable(index, itemIndex, 'name', value);
-                            if (predefinedItem) {
-                              updateConsumable(index, itemIndex, 'costPerUnit', predefinedItem.costPerUnit);
-                            }
-                          }}
-                        >
-                          <Select.Trigger className="w-full flex justify-between items-center px-3 py-2 text-sm border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                            <Select.Value />
-                            <Select.Icon>
-                              <ChevronDownIcon className="h-4 w-4" />
-                            </Select.Icon>
-                          </Select.Trigger>
-
-                          <Select.Portal>
-                            <Select.Content className="bg-white dark:bg-gray-800 rounded-md shadow-lg border dark:border-gray-700">
-                              <Select.Viewport className="p-1">
-                                {PREDEFINED_ITEMS.map((predefinedItem) => (
-                                  <Select.Item
-                                    key={predefinedItem.name}
-                                    value={predefinedItem.name}
-                                    className="px-3 py-2 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white cursor-default"
-                                  >
-                                    <Select.ItemText>{predefinedItem.name}</Select.ItemText>
-                                  </Select.Item>
-                                ))}
-                              </Select.Viewport>
-                            </Select.Content>
-                          </Select.Portal>
-                        </Select.Root>
+                        {editingItemName && editingItemName.playerIndex === index && editingItemName.itemIndex === itemIndex ? (
+                          <input
+                            ref={itemInputRef}
+                            type="text"
+                            value={item.name}
+                            onChange={e => updateConsumable(index, itemIndex, 'name', e.target.value)}
+                            onBlur={() => setEditingItemName(null)}
+                            onKeyDown={e => { if (e.key === 'Enter') setEditingItemName(null); }}
+                            className="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                          />
+                        ) : (
+                          <span
+                            className="w-full block px-3 py-2 text-sm border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white cursor-pointer"
+                            onClick={() => setEditingItemName({ playerIndex: index, itemIndex })}
+                            tabIndex={0}
+                            onKeyDown={e => {
+                              if (e.key === 'Enter' || e.key === ' ') setEditingItemName({ playerIndex: index, itemIndex });
+                            }}
+                            role="button"
+                            aria-label="Edit item name"
+                          >
+                            {item.name}
+                          </span>
+                        )}
                       </div>
 
                       <div className="col-span-3">

@@ -1,5 +1,6 @@
 export interface ConsumableItem {
-  name: PredefinedItemName;
+  id: string;
+  name: string;
   quantity: number;
   costPerUnit: number;
   selected?: boolean;
