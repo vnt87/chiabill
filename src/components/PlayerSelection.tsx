@@ -1,7 +1,6 @@
 import { Player, ConsumableItem, PREDEFINED_ITEMS, PredefinedItemName } from '../types';
 import { PlusIcon, MinusIcon } from 'lucide-react';
 import * as Switch from '@radix-ui/react-switch';
-import { ChevronDownIcon } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
