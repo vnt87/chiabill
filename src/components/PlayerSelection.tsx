@@ -174,7 +174,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                 />
               ) : (
                 <span
-                  className="ml-2 px-2 py-1 cursor-pointer"
+                  className="ml-2 px-2 py-1 cursor-pointer dark:text-gray-300"
                   onClick={() => setEditingPlayerIndex(index)}
                   tabIndex={0}
                   onKeyDown={e => {
@@ -259,13 +259,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                             updateConsumable(index, itemIndex, 'name', value);
                             if (predefinedItem) {
                               updateConsumable(index, itemIndex, 'costPerUnit', predefinedItem.costPerUnit);
-  // Handler to update player name
-  const handlePlayerNameChange = (index: number, newName: string) => {
-    const newPlayers = [...players];
-    newPlayers[index].name = newName;
-    onPlayerChange(newPlayers);
-  };
-}
+                            }
                           }}
                         >
                           <Select.Trigger className="w-full flex justify-between items-center px-3 py-2 text-sm border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
