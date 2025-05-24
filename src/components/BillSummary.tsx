@@ -1,8 +1,10 @@
+import { useState, useRef } from 'react';
 import { BillData, Player } from '../types';
 import { differenceInMinutes, parse } from 'date-fns';
 import { useLanguage } from '../contexts/LanguageContext';
+import { saveBill } from '../lib/api';
 import html2canvas from 'html2canvas';
-import { useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 interface BillSummaryProps {
   data: BillData;
@@ -13,6 +15,23 @@ export function BillSummary({ data }: BillSummaryProps) {
   const summaryRef = useRef<HTMLDivElement>(null);
   const exportButtonRef = useRef<HTMLButtonElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
+  const [savedBillId, setSavedBillId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setSaveError(null);
+    try {
+      const savedBill = await saveBill(data);
+      setSavedBillId(savedBill.id);
+    } catch (error) {
+      setSaveError('Failed to save bill. Please try again.');
+      console.error('Error saving bill:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const handleExport = async () => {
     if (!summaryRef.current || !exportButtonRef.current || !footerRef.current) return;
@@ -101,6 +120,8 @@ export function BillSummary({ data }: BillSummaryProps) {
     return `${amount.toFixed(0)}k`;
   };
 
+  const shareUrl = savedBillId ? `${window.location.origin}/bill/${savedBillId}` : null;
+
   return (
     <div ref={summaryRef} className="bg-white dark:bg-gray-800 p-6 rounded-lg space-y-4">
       <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{t.billSummary}</h2>
@@ -152,15 +173,59 @@ export function BillSummary({ data }: BillSummaryProps) {
               </div>
             );
           })}
+        </div>
       </div>
-      <button
-        ref={exportButtonRef}
-        onClick={handleExport}
-        disabled={!data.totalAmount || data.totalAmount <= 0}
-        className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-600"
-      >
-        {t.exportAsImage}
-      </button>
+
+      {saveError && (
+        <div className="text-red-500 text-sm mt-2">{saveError}</div>
+      )}
+
+      {shareUrl && (
+        <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mt-4">
+          <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">Share this bill:</div>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              readOnly
+              value={shareUrl}
+              className="flex-1 bg-white dark:bg-gray-800 text-sm p-2 rounded border dark:border-gray-600"
+              onClick={(e) => e.currentTarget.select()}
+            />
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(shareUrl);
+                // You could add a toast notification here
+              }}
+              className="p-2 bg-gray-200 dark:bg-gray-600 rounded hover:bg-gray-300 dark:hover:bg-gray-500"
+            >
+              Copy
+            </button>
+          </div>
+          <div className="text-sm text-blue-600 dark:text-blue-400 mt-2">
+            <Link to={`/bill/${savedBillId}`}>View Details →</Link>
+          </div>
+        </div>
+      )}
+
+      <div className="flex gap-2">
+        <button
+          onClick={handleSave}
+          disabled={!data.totalAmount || data.totalAmount <= 0 || isSaving}
+          className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
+        >
+          {isSaving ? 'Saving...' : 'Save & Share'}
+        </button>
+
+        <button
+          ref={exportButtonRef}
+          onClick={handleExport}
+          disabled={!data.totalAmount || data.totalAmount <= 0}
+          className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-600"
+        >
+          {t.exportAsImage}
+        </button>
+      </div>
+
       <div
         ref={footerRef}
         className="hidden text-xs text-center mt-4 text-gray-500 dark:text-gray-400"
@@ -168,7 +233,6 @@ export function BillSummary({ data }: BillSummaryProps) {
         Generated with<br />
         <span className="text-blue-600 dark:text-blue-400">https://chiabill.pages.dev</span>
       </div>
-    </div>
     </div>
   );
 }

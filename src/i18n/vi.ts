@@ -24,5 +24,27 @@ export const vi = {
   placeholder: {
     totalAmount: 'Nhập tổng tiền'
   },
-  exportAsImage: 'Xuất Thành Ảnh'
+  exportAsImage: 'Xuất Thành Ảnh',
+  navigation: {
+    calculator: 'Tính Tiền',
+    history: 'Lịch Sử'
+  },
+  actions: {
+    delete: 'Xóa',
+    confirmDelete: 'Bạn có chắc muốn xóa hóa đơn này?'
+  },
+  loading: 'Đang tải...',
+  noHistory: 'Chưa có hóa đơn nào',
+  viewDetails: 'Xem Chi Tiết',
+  billDetails: 'Chi Tiết Hóa Đơn',
+  backToHistory: 'Về Lịch Sử',
+  createdOn: 'Tạo lúc',
+  noDate: 'Không có ngày',
+  total: 'Tổng',
+  sessionInfo: 'Thông Tin Chơi',
+  noTimeData: 'Không có thông tin giờ',
+  urlCopied: 'Đã sao chép link!',
+  copyShareLink: 'Sao Chép Link Chia Sẻ',
+  failedToLoad: 'Không tải được hóa đơn',
+  billNotFound: 'Không tìm thấy hóa đơn'
 };

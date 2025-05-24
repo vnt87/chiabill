@@ -24,5 +24,27 @@ export const en = {
   placeholder: {
     totalAmount: 'Enter total amount'
   },
-  exportAsImage: 'Export as Image'
+  exportAsImage: 'Export as Image',
+  navigation: {
+    calculator: 'Calculator',
+    history: 'History'
+  },
+  actions: {
+    delete: 'Delete',
+    confirmDelete: 'Are you sure you want to delete this bill?'
+  },
+  loading: 'Loading...',
+  noHistory: 'No bills found',
+  viewDetails: 'View Details',
+  billDetails: 'Bill Details',
+  backToHistory: 'Back to History',
+  createdOn: 'Created on',
+  noDate: 'No date',
+  total: 'Total',
+  sessionInfo: 'Session Information',
+  noTimeData: 'No time data',
+  urlCopied: 'Link copied to clipboard!',
+  copyShareLink: 'Copy Share Link',
+  failedToLoad: 'Failed to load bill',
+  billNotFound: 'Bill not found'
 };
