@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { BillData, Player } from '../types';
 import { differenceInMinutes, parse } from 'date-fns';
 import { useLanguage } from '../contexts/LanguageContext';
+import { formatDuration } from '../lib/dateUtils';
 import { saveBill } from '../lib/api';
 import html2canvas from 'html2canvas';
 import { Link } from 'react-router-dom';
@@ -129,7 +130,7 @@ export function BillSummary({ data }: BillSummaryProps) {
       <div className="space-y-3">
         <div className="flex justify-between items-center">
           <span className="text-gray-600 dark:text-gray-400">{t.sessionDuration}</span>
-          <span className="font-medium dark:text-white">{totalTime} {t.minutes}</span>
+          <span className="font-medium dark:text-white">{formatDuration(totalTime)}</span>
         </div>
         
         <div className="flex justify-between items-center">
@@ -154,7 +155,7 @@ export function BillSummary({ data }: BillSummaryProps) {
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600 dark:text-gray-400">
                     {player.name}
-                    {totalPlayerMinutes > 0 && ` (${playerTime} mins)`}
+                    {totalPlayerMinutes > 0 && ` (${formatDuration(playerTime)})`}
                   </span>
                   <span className="font-medium text-indigo-600 dark:text-indigo-400">
                     {formatCurrency(playerShare)}

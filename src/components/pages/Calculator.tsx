@@ -130,10 +130,11 @@ export function Calculator() {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 {t.sessionStart}
               </label>
-              <input
-                type="time"
-                step="60"
-                value={billData.sessionStart}
+                <input
+                  type="time"
+                  step="60"
+                  pattern="[0-9]{2}:[0-9]{2}"
+                  value={billData.sessionStart}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   const newStart = e.target.value;
                   if (billData.sessionEnd && newStart > billData.sessionEnd) {
@@ -155,10 +156,11 @@ export function Calculator() {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 {t.sessionEnd}
               </label>
-              <input
-                type="time"
-                step="60"
-                value={billData.sessionEnd}
+                <input
+                  type="time"
+                  step="60"
+                  pattern="[0-9]{2}:[0-9]{2}"
+                  value={billData.sessionEnd}
                 min={billData.sessionStart || undefined}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   const newEnd = e.target.value;

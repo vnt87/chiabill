@@ -226,6 +226,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                       <label className="block text-sm text-gray-600 dark:text-gray-400">{t.startTime}</label>
                       <input
                         type="time"
+                        pattern="[0-9]{2}:[0-9]{2}"
                         value={player.startTime}
                         min={sessionStart}
                         max={player.endTime || sessionEnd}
@@ -237,6 +238,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                       <label className="block text-sm text-gray-600 dark:text-gray-400">{t.endTime}</label>
                       <input
                         type="time"
+                        pattern="[0-9]{2}:[0-9]{2}"
                         value={player.endTime}
                         min={player.startTime || sessionStart}
                         max={sessionEnd}

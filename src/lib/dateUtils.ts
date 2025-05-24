@@ -14,6 +14,21 @@ export function formatDate(dateStr: string, formatStr: string): string {
   }
 }
 
+export function formatDuration(minutes: number): string {
+  if (minutes < 0) return 'Invalid duration';
+  
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  
+  if (hours === 0) {
+    return `${remainingMinutes}m`;
+  } else if (remainingMinutes === 0) {
+    return `${hours}h`;
+  } else {
+    return `${hours}h ${remainingMinutes}m`;
+  }
+}
+
 export function formatTime(timeStr: string): string {
   try {
     // For time strings like "13:45", we need to create a full date
@@ -25,7 +40,7 @@ export function formatTime(timeStr: string): string {
       return 'Invalid time';
     }
     
-    return format(date, 'h:mm a');
+    return format(date, 'HH:mm');
   } catch (error) {
     console.error(`Error formatting time: ${timeStr}`, error);
     return 'Invalid time';
