@@ -93,7 +93,7 @@ export function History() {
               <div className="text-sm">
                 <div className="font-medium mb-1 text-gray-800 dark:text-gray-200">{t.players}:</div>
                 <ul className="list-disc list-inside text-gray-600 dark:text-gray-400">
-                  {bill.players.map((player) => (
+                  {bill.players.filter(p => p.participated).map((player) => (
                     <li key={player.id}>
                       {player.name}
                     </li>

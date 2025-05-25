@@ -1,8 +1,6 @@
 import { Heart, Github, Sun, Moon, Calculator, ClockIcon } from 'lucide-react';
 import { useLanguage, translations } from '../contexts/LanguageContext';
 import { Link, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
-
 interface LayoutProps {
   children: React.ReactNode;
   isDarkMode: boolean;
@@ -13,21 +11,17 @@ export function Layout({ children, isDarkMode, setIsDarkMode }: LayoutProps) {
   const { t, language, setLanguage } = useLanguage();
   const location = useLocation();
 
-  const isActive = (path: string) => location.pathname === path;
-
-  useEffect(() => {
-    // Set initial theme based on system preference
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setIsDarkMode(prefersDark);
-  }, []);
+  const isActive = (path: string) => 
+    location.pathname === path || 
+    (path === '/history' && location.pathname.startsWith('/bill/'));
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-6 flex flex-col">
       <div className="w-[95%] sm:w-[90%] max-w-[1200px] mx-auto px-2 sm:px-4 flex-grow">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+          <Link to="/" className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white hover:opacity-80 transition-opacity">
             {t.title}
-          </h1>
+          </Link>
           <div className="flex items-center gap-4">
             <nav className="flex items-center gap-2">
               <Link

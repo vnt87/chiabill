@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { getBill } from '../../lib/api';
+import { getBill, deleteBill } from '../../lib/api';
 import { formatDate, formatTime, formatDuration } from '../../lib/dateUtils';
 import { BillData, Player } from '../../types';
 import { differenceInMinutes, parse } from 'date-fns';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 
 interface BillWithMetadata extends BillData {
   id: string;
@@ -18,7 +18,9 @@ interface BillDetailsProps {
 
 export function BillDetails({ id }: BillDetailsProps) {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const [bill, setBill] = useState<BillWithMetadata | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const calculatePlayerTime = (player: Player): number => {
     if (!player.startTime || !player.endTime) return 0;
@@ -82,6 +84,21 @@ export function BillDetails({ id }: BillDetailsProps) {
     loadBill();
   }, [id, t]);
 
+  const handleDelete = async () => {
+    if (window.confirm(t.actions?.confirmDelete || 'Are you sure you want to delete this bill?')) {
+      setIsDeleting(true);
+      try {
+        await deleteBill(id);
+        navigate('/history');
+      } catch (err) {
+        setError('Failed to delete bill');
+        console.error(err);
+      } finally {
+        setIsDeleting(false);
+      }
+    }
+  };
+
   if (isLoading) {
     return <div className="text-center p-4 text-gray-800 dark:text-gray-200">{t.loading}</div>;
   }
@@ -142,12 +159,12 @@ export function BillDetails({ id }: BillDetailsProps) {
         <div className="mb-6">
           <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">{t.players}</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {bill.players.map((player) => (
+            {bill.players.filter(p => p.participated).map((player) => (
       <div key={player.id} className="border dark:border-gray-700 rounded-lg p-4 space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="font-medium text-gray-900 dark:text-white">{player.name}</span>
                   <span className="font-medium text-indigo-600 dark:text-indigo-400">
-                    {formatCurrency(calculatePlayerShare(player, bill.players))}
+                    {formatCurrency(calculatePlayerShare(player, bill.players.filter(p => p.participated)))}
                   </span>
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
@@ -194,7 +211,7 @@ export function BillDetails({ id }: BillDetailsProps) {
           </div>
         </div>
 
-        <div className="mt-6 border-t dark:border-gray-700 pt-4">
+        <div className="mt-6 border-t dark:border-gray-700 pt-4 flex justify-between items-center">
           <button
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);
@@ -203,6 +220,15 @@ export function BillDetails({ id }: BillDetailsProps) {
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
           >
             {t.copyShareLink}
+          </button>
+
+          <button
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 disabled:opacity-50"
+          >
+            <Trash2 size={18} />
+            {isDeleting ? 'Deleting...' : 'Delete Bill'}
           </button>
         </div>
       </div>

@@ -18,7 +18,11 @@ function App() {
     if (typeof window !== 'undefined') {
       const savedMode = localStorage.getItem('darkMode');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      return savedMode ? savedMode === 'true' : prefersDark;
+      const isDark = savedMode ? savedMode === 'true' : prefersDark;
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      }
+      return isDark;
     }
     return false;
   });

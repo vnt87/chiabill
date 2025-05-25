@@ -24,7 +24,12 @@ export function BillSummary({ data }: BillSummaryProps) {
     setIsSaving(true);
     setSaveError(null);
     try {
-      const savedBill = await saveBill(data);
+      // Filter out non-participating players before saving
+      const billToSave = {
+        ...data,
+        players: data.players.filter(player => player.participated)
+      };
+      const savedBill = await saveBill(billToSave);
       setSavedBillId(savedBill.id);
     } catch (error) {
       setSaveError('Failed to save bill. Please try again.');
