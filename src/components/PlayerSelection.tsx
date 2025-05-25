@@ -148,19 +148,9 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-gray-700 dark:text-gray-300">{t.players}</h3>
-        <button
-          type="button"
-          onClick={onAddPlayer}
-          className="px-3 py-1 rounded bg-indigo-600 text-white text-sm hover:bg-indigo-700 flex items-center gap-1"
-          aria-label={t.addPlayerButtonLabel}
-        >
-          <PlusIcon className="w-4 h-4" />
-          {t.addPlayerButton}
-        </button>
-      </div>
-      <div className="space-y-4">
+      <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-4">{t.players}</h3>
+      
+      <div className="space-y-4 mb-6">
         {players.map((player, index) => (
           <div key={player.id || index} className="space-y-3">
             <div className="flex items-center">
@@ -328,6 +318,18 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
             )}
           </div>
         ))}
+      </div>
+
+      <div className="flex justify-center">
+        <button
+          type="button"
+          onClick={onAddPlayer}
+          className="px-4 py-2 rounded bg-indigo-600 text-white text-sm hover:bg-indigo-700 flex items-center gap-2"
+          aria-label={t.addPlayerButtonLabel}
+        >
+          <PlusIcon className="w-4 h-4" />
+          {t.addPlayerButton}
+        </button>
       </div>
     </div>
   );

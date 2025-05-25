@@ -46,5 +46,17 @@ export const en = {
   urlCopied: 'Link copied to clipboard!',
   copyShareLink: 'Copy Share Link',
   failedToLoad: 'Failed to load bill',
-  billNotFound: 'Bill not found'
+  billNotFound: 'Bill not found',
+  dateFormats: {
+    shortDate: 'MMM d, yyyy',
+    fullDate: 'MMMM d, yyyy',
+    shortDateTime: 'MMM d, yyyy h:mm a',
+    fullDateTime: 'MMMM d, yyyy HH:mm',
+    time: 'HH:mm',
+    duration: {
+      hoursMinutes: '{hours}h {minutes}m',
+      hoursOnly: '{hours}h',
+      minutesOnly: '{minutes}m'
+    }
+  }
 };

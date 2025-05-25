@@ -46,5 +46,17 @@ export const vi = {
   urlCopied: 'Đã sao chép link!',
   copyShareLink: 'Sao Chép Link Chia Sẻ',
   failedToLoad: 'Không tải được hóa đơn',
-  billNotFound: 'Không tìm thấy hóa đơn'
+  billNotFound: 'Không tìm thấy hóa đơn',
+  dateFormats: {
+    shortDate: 'dd/MM/yyyy',
+    fullDate: 'dd MMMM, yyyy',
+    shortDateTime: 'dd/MM/yyyy HH:mm',
+    fullDateTime: 'dd MMMM, yyyy HH:mm',
+    time: 'HH:mm',
+    duration: {
+      hoursMinutes: '{hours}g {minutes}p',
+      hoursOnly: '{hours}g',
+      minutesOnly: '{minutes}p'
+    }
+  }
 };

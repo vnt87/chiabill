@@ -1,48 +1,61 @@
 import { format, parseISO, isValid } from 'date-fns';
+import { vi } from 'date-fns/locale';
+import { useLanguage } from '../contexts/LanguageContext';
 
-export function formatDate(dateStr: string, formatStr: string): string {
+export function formatDate(dateStr: string, formatStr?: string): string {
+  const { t, language } = useLanguage();
+  
   try {
-    // First try parsing as ISO date string
     const date = parseISO(dateStr);
     if (!isValid(date)) {
-      return 'Invalid date';
+      return t.noDate;
     }
-    return format(date, formatStr);
+
+    // If no format string is provided, use default short date format
+    const dateFormat = formatStr || t.dateFormats.shortDate;
+    return format(date, dateFormat, {
+      locale: language === 'vi' ? vi : undefined
+    });
   } catch (error) {
     console.error(`Error formatting date: ${dateStr}`, error);
-    return 'Invalid date';
+    return t.noDate;
   }
 }
 
 export function formatDuration(minutes: number): string {
-  if (minutes < 0) return 'Invalid duration';
+  const { t } = useLanguage();
+  
+  if (minutes < 0) return t.noTimeData;
   
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
   
   if (hours === 0) {
-    return `${remainingMinutes}m`;
+    return t.dateFormats.duration.minutesOnly.replace('{minutes}', remainingMinutes.toString());
   } else if (remainingMinutes === 0) {
-    return `${hours}h`;
+    return t.dateFormats.duration.hoursOnly.replace('{hours}', hours.toString());
   } else {
-    return `${hours}h ${remainingMinutes}m`;
+    return t.dateFormats.duration.hoursMinutes
+      .replace('{hours}', hours.toString())
+      .replace('{minutes}', remainingMinutes.toString());
   }
 }
 
 export function formatTime(timeStr: string): string {
+  const { t } = useLanguage();
+  
   try {
-    // For time strings like "13:45", we need to create a full date
     const today = new Date();
     const [hours, minutes] = timeStr.split(':').map(Number);
     const date = new Date(today.getFullYear(), today.getMonth(), today.getDate(), hours, minutes);
     
     if (!isValid(date)) {
-      return 'Invalid time';
+      return t.noTimeData;
     }
     
-    return format(date, 'HH:mm');
+    return format(date, t.dateFormats.time);
   } catch (error) {
     console.error(`Error formatting time: ${timeStr}`, error);
-    return 'Invalid time';
+    return t.noTimeData;
   }
 }

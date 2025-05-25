@@ -5,7 +5,7 @@ import { BillData, Player } from '../../types';
 import { differenceInMinutes, parse } from 'date-fns';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2 } from 'lucide-react';
+import { ArrowLeft, Trash2, Check as CheckIcon, Copy as ClipboardCopyIcon } from 'lucide-react';
 
 interface BillWithMetadata extends BillData {
   id: string;
@@ -21,6 +21,8 @@ export function BillDetails({ id }: BillDetailsProps) {
   const navigate = useNavigate();
   const [bill, setBill] = useState<BillWithMetadata | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const currentURL = window.location.href;
 
   const calculatePlayerTime = (player: Player): number => {
     if (!player.startTime || !player.endTime) return 0;
@@ -212,15 +214,38 @@ export function BillDetails({ id }: BillDetailsProps) {
         </div>
 
         <div className="mt-6 border-t dark:border-gray-700 pt-4 flex justify-between items-center">
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(window.location.href);
-              alert(t.urlCopied);
-            }}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-          >
-            {t.copyShareLink}
-          </button>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={currentURL}
+              readOnly
+              className="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-2 rounded border dark:border-gray-600 text-sm w-64 focus:outline-none"
+            />
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(currentURL);
+                setIsCopied(true);
+                setTimeout(() => setIsCopied(false), 2000);
+              }}
+              className={`inline-flex items-center gap-2 px-3 py-2 rounded text-sm transition-colors ${
+                isCopied 
+                  ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+              }`}
+            >
+              {isCopied ? (
+                <>
+                  <CheckIcon className="w-4 h-4" />
+                  <span>{t.urlCopied}</span>
+                </>
+              ) : (
+                <>
+                  <ClipboardCopyIcon className="w-4 h-4" />
+                  <span>{t.copyShareLink}</span>
+                </>
+              )}
+            </button>
+          </div>
 
           <button
             onClick={handleDelete}
