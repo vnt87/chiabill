@@ -139,16 +139,15 @@ export function BillDetails({ id }: BillDetailsProps) {
             <div className="text-gray-600 dark:text-gray-400">
               {bill.sessionStart && bill.sessionEnd ? (
                 <>
-                  {formatTime(bill.sessionStart)} - {formatTime(bill.sessionEnd)}
                   {(() => {
                     const [startHours, startMinutes] = bill.sessionStart.split(':').map(Number);
                     const [endHours, endMinutes] = bill.sessionEnd.split(':').map(Number);
                     let durationInMinutes = (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
                     if (durationInMinutes < 0) durationInMinutes += 24 * 60; // Handle overnight sessions
                     return (
-                      <div className="mt-1 text-sm">
-                        ({formatDuration(durationInMinutes)})
-                      </div>
+                      <span>
+                        {formatTime(bill.sessionStart)} - {formatTime(bill.sessionEnd)} • ({formatDuration(durationInMinutes)})
+                      </span>
                     );
                   })()}
                 </>
@@ -170,29 +169,22 @@ export function BillDetails({ id }: BillDetailsProps) {
                   </span>
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                  {player.isFullSession ? (
-                    t.fullSession
-                  ) : (
+                  {player.startTime && player.endTime ? (
                     <>
-                      {player.startTime && player.endTime ? (
-                        <>
-                          {formatTime(player.startTime)} - {formatTime(player.endTime)}
-                          {(() => {
-                            const [startHours, startMinutes] = player.startTime.split(':').map(Number);
-                            const [endHours, endMinutes] = player.endTime.split(':').map(Number);
-                            let durationInMinutes = (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
-                            if (durationInMinutes < 0) durationInMinutes += 24 * 60; // Handle overnight sessions
-                            return (
-                              <div className="mt-1 text-sm">
-                                ({formatDuration(durationInMinutes)})
-                              </div>
-                            );
-                          })()}
-                        </>
-                      ) : (
-                        t.noTimeData
-                      )}
+                      {(() => {
+                        const [startHours, startMinutes] = player.startTime.split(':').map(Number);
+                        const [endHours, endMinutes] = player.endTime.split(':').map(Number);
+                        let durationInMinutes = (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
+                        if (durationInMinutes < 0) durationInMinutes += 24 * 60; // Handle overnight sessions
+                        return (
+                          <span>
+                            {formatTime(player.startTime)} - {formatTime(player.endTime)} • ({formatDuration(durationInMinutes)})
+                          </span>
+                        );
+                      })()}
                     </>
+                  ) : (
+                    player.isFullSession ? t.fullSession : t.noTimeData
                   )}
                 </div>
                 {player.consumables.length > 0 && (
@@ -261,7 +253,7 @@ export function BillDetails({ id }: BillDetailsProps) {
               className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 disabled:opacity-50"
             >
               <Trash2 size={18} />
-              {isDeleting ? 'Deleting...' : 'Delete Bill'}
+              {isDeleting ? t.loading : t.actions.delete}
             </button>
           </div>
         </div>

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { getRecentBills, deleteBill } from '../../lib/api';
-import { formatDate, formatTime } from '../../lib/dateUtils';
+import { formatDate, formatTime, formatDuration } from '../../lib/dateUtils';
+import { differenceInMinutes } from 'date-fns';
+import { parse } from 'date-fns';
 import { BillData } from '../../types';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Trash2 } from 'lucide-react';
@@ -82,7 +84,12 @@ export function History() {
                 <div className="text-sm text-gray-600 dark:text-gray-400">
                   {bill.sessionStart && bill.sessionEnd ? (
                     <>
-                      {formatTime(bill.sessionStart)} - {formatTime(bill.sessionEnd)}
+                      {formatTime(bill.sessionStart)} • {formatTime(bill.sessionEnd)} • {formatDuration(
+                        differenceInMinutes(
+                          parse(bill.sessionEnd, 'HH:mm', new Date()),
+                          parse(bill.sessionStart, 'HH:mm', new Date())
+                        )
+                      )}
                     </>
                   ) : (
                     'No time data'

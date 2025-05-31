@@ -55,9 +55,9 @@ export const vi = {
     fullDateTime: 'dd MMMM, yyyy HH:mm',
     time: 'HH:mm',
     duration: {
-      hoursMinutes: '{hours}g {minutes}p',
-      hoursOnly: '{hours}g',
-      minutesOnly: '{minutes}p'
+      hoursMinutes: '{hours}h {minutes}m',
+      hoursOnly: '{hours}h',
+      minutesOnly: '{minutes}m'
     }
   }
 };
