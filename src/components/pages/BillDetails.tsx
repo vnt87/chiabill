@@ -5,7 +5,7 @@ import { BillData, Player } from '../../types';
 import { differenceInMinutes, parse } from 'date-fns';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2, Check as CheckIcon, Copy as ClipboardCopyIcon } from 'lucide-react';
+import { ArrowLeft, Trash2, Check as CheckIcon, Copy as ClipboardCopyIcon, RefreshCw } from 'lucide-react';
 
 interface BillWithMetadata extends BillData {
   id: string;
@@ -247,14 +247,23 @@ export function BillDetails({ id }: BillDetailsProps) {
             </button>
           </div>
 
-          <button
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 disabled:opacity-50"
-          >
-            <Trash2 size={18} />
-            {isDeleting ? 'Deleting...' : 'Delete Bill'}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => navigate('/calculator', { state: { initialData: bill } })}
+              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+            >
+              <RefreshCw size={18} />
+              {t.actions.recalculate}
+            </button>
+            <button
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 disabled:opacity-50"
+            >
+              <Trash2 size={18} />
+              {isDeleting ? 'Deleting...' : 'Delete Bill'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

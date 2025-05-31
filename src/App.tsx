@@ -43,6 +43,7 @@ function App() {
       <Layout isDarkMode={isDarkMode} setIsDarkMode={handleDarkModeChange}>
         <Routes>
           <Route path="/" element={<Calculator />} />
+          <Route path="/calculator" element={<Calculator />} />
           <Route path="/history" element={<History />} />
           <Route path="/bill/:id" element={<BillDetailsWrapper />} />
         </Routes>

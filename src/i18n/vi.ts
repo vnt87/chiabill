@@ -31,7 +31,8 @@ export const vi = {
   },
   actions: {
     delete: 'Xóa',
-    confirmDelete: 'Bạn có chắc muốn xóa hóa đơn này?'
+    confirmDelete: 'Bạn có chắc muốn xóa hóa đơn này?',
+    recalculate: 'Tính Lại'
   },
   loading: 'Đang tải...',
   noHistory: 'Chưa có hóa đơn nào',

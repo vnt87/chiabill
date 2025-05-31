@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { PlayerSelection } from '../PlayerSelection';
 import { BillSummary } from '../BillSummary';
 import { Player, BillData } from '../../types';
@@ -19,11 +20,17 @@ const initialPlayers: Player[] = [
 
 export function Calculator() {
   const { t } = useLanguage();
-  const [billData, setBillData] = useState<BillData>({
-    totalAmount: 0,
-    sessionStart: '',
-    sessionEnd: '',
-    players: initialPlayers
+  const location = useLocation();
+  const [billData, setBillData] = useState<BillData>(() => {
+    if (location.state?.initialData) {
+      return location.state.initialData;
+    }
+    return {
+      totalAmount: 0,
+      sessionStart: '',
+      sessionEnd: '',
+      players: initialPlayers
+    };
   });
 
   // Track guest player count for unique default names

@@ -31,7 +31,8 @@ export const en = {
   },
   actions: {
     delete: 'Delete',
-    confirmDelete: 'Are you sure you want to delete this bill?'
+    confirmDelete: 'Are you sure you want to delete this bill?',
+    recalculate: 'Recalculate'
   },
   loading: 'Loading...',
   noHistory: 'No bills found',
