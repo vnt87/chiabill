@@ -205,56 +205,58 @@ export function BillDetails({ id }: BillDetailsProps) {
           </div>
         </div>
 
-        <div className="mt-6 border-t dark:border-gray-700 pt-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              value={currentURL}
-              readOnly
-              className="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-2 rounded border dark:border-gray-600 text-sm w-64 focus:outline-none"
-            />
-            <button
-              onClick={() => {
-                navigator.clipboard.writeText(currentURL);
-                setIsCopied(true);
-                setTimeout(() => setIsCopied(false), 2000);
-              }}
-              className={`inline-flex items-center gap-2 px-3 py-2 rounded text-sm transition-colors ${
-                isCopied 
-                  ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
-              }`}
-            >
-              {isCopied ? (
-                <>
-                  <CheckIcon className="w-4 h-4" />
-                  <span>{t.urlCopied}</span>
-                </>
-              ) : (
-                <>
-                  <ClipboardCopyIcon className="w-4 h-4" />
-                  <span>{t.copyShareLink}</span>
-                </>
-              )}
-            </button>
-          </div>
+        <div className="mt-6 border-t dark:border-gray-700 pt-4">
+          <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center">
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <input
+                type="text"
+                value={currentURL}
+                readOnly
+                className="bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-3 py-2 rounded border dark:border-gray-600 text-sm w-64 focus:outline-none"
+              />
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(currentURL);
+                  setIsCopied(true);
+                  setTimeout(() => setIsCopied(false), 2000);
+                }}
+                className={`inline-flex items-center gap-2 px-3 py-2 rounded text-sm transition-colors ${
+                  isCopied 
+                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+                }`}
+              >
+                {isCopied ? (
+                  <>
+                    <CheckIcon className="w-4 h-4" />
+                    <span>{t.urlCopied}</span>
+                  </>
+                ) : (
+                  <>
+                    <ClipboardCopyIcon className="w-4 h-4" />
+                    <span>{t.copyShareLink}</span>
+                  </>
+                )}
+              </button>
+            </div>
 
-          <div className="flex gap-2">
-            <button
-              onClick={() => navigate('/calculator', { state: { initialData: bill } })}
-              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-            >
-              <RefreshCw size={18} />
-              {t.actions.recalculate}
-            </button>
-            <button
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 disabled:opacity-50"
-            >
-              <Trash2 size={18} />
-              {isDeleting ? t.loading : t.actions.delete}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <button
+                onClick={() => navigate('/calculator', { state: { initialData: bill } })}
+                className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+              >
+                <RefreshCw size={18} />
+                {t.actions.recalculate}
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 disabled:opacity-50"
+              >
+                <Trash2 size={18} />
+                {isDeleting ? t.loading : t.actions.delete}
+              </button>
+            </div>
           </div>
         </div>
       </div>
