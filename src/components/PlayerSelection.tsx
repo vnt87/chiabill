@@ -150,7 +150,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm space-y-4">
       <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-4">{t.players}</h3>
       
-      <div className="space-y-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         {players.map((player, index) => (
           <div key={player.id || index} className="space-y-3">
             <div className="flex items-center">

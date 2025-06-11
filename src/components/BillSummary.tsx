@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { BillData, Player } from '../types';
 import { differenceInMinutes, parse } from 'date-fns';
 import { useLanguage } from '../contexts/LanguageContext';
+import { Toast } from './Toast';
 import { formatDuration } from '../lib/dateUtils';
 import { saveBill } from '../lib/api';
 import html2canvas from 'html2canvas';
@@ -19,6 +20,7 @@ export function BillSummary({ data }: BillSummaryProps) {
   const [savedBillId, setSavedBillId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [showToast, setShowToast] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -200,13 +202,18 @@ export function BillSummary({ data }: BillSummaryProps) {
             <button
               onClick={() => {
                 navigator.clipboard.writeText(shareUrl);
-                // You could add a toast notification here
+                setShowToast(true);
               }}
               className="p-2 bg-gray-200 dark:bg-gray-600 rounded hover:bg-gray-300 dark:hover:bg-gray-500"
             >
               Copy
             </button>
           </div>
+          <Toast
+            message={t.urlCopied}
+            isVisible={showToast}
+            onClose={() => setShowToast(false)}
+          />
           <div className="text-sm text-blue-600 dark:text-blue-400 mt-2">
             <Link to={`/bill/${savedBillId}`}>View Details →</Link>
           </div>

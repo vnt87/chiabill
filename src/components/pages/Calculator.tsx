@@ -7,7 +7,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 
 let playerIdCounter = 1;
 const initialPlayers: Player[] = [
-  "Nam", "Chung", "Huy", "Tính", "Hiếu", "Tuấn"
+  "Nam", "Chung", "Huy", "Tính", "Hiếu", "Tuấn", "Thủy", "Khánh"
 ].map(name => ({
   id: `player-${playerIdCounter++}`,
   name,
