@@ -1,5 +1,5 @@
 import { Heart, Github, Sun, Moon, Calculator, ClockIcon } from 'lucide-react';
-import { useLanguage, translations } from '../contexts/LanguageContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { Link, useLocation } from 'react-router-dom';
 interface LayoutProps {
   children: React.ReactNode;
