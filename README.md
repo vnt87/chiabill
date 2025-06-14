@@ -20,8 +20,8 @@ Check out the live demo: [NT Billiard Bill Splitter](https://chiabill.pages.dev)
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/nt-billiard-bill-splitter.git
-cd nt-billiard-bill-splitter
+git clone https://github.com/vnt87/chiabill
+cd chiabill
 ```
 
 2. Install dependencies:
@@ -55,3 +55,4 @@ npm run pages:deploy
 - Vite
 - TailwindCSS
 - Cloudflare Pages
+- Cloudflare KV (for persistent storage)
