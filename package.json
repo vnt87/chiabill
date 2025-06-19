@@ -12,6 +12,7 @@
     "pages:deploy": "wrangler pages deploy ./dist"
   },
   "dependencies": {
+    "@ariakit/react": "^0.4.17",
     "@headlessui/react": "^2.2.0",
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-select": "^2.0.0",
@@ -22,6 +23,7 @@
     "lucide-react": "^0.453.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-number-format": "^5.4.4",
     "react-router-dom": "^7.6.0"
   },
   "devDependencies": {

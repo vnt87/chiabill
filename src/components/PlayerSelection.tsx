@@ -3,6 +3,8 @@ import { PlusIcon, MinusIcon } from 'lucide-react';
 import * as Switch from '@radix-ui/react-switch';
 import { useEffect, useState, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import * as Ariakit from '@ariakit/react';
+import { NumericFormat } from 'react-number-format';
 
 interface PlayerSelectionProps {
   players: Player[];
@@ -129,9 +131,9 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
   const [editingPlayerIndex, setEditingPlayerIndex] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // State for editing item name
-  const [editingItemName, setEditingItemName] = useState<{ playerIndex: number; itemIndex: number } | null>(null);
-  const itemInputRef = useRef<HTMLInputElement>(null);
+  // State for editing item name - commented out as it's no longer used
+  // const [editingItemName, setEditingItemName] = useState<{ playerIndex: number; itemIndex: number } | null>(null);
+  // const itemInputRef = useRef<HTMLInputElement>(null);
 
   // Focus the input when it appears
   useEffect(() => {
@@ -140,11 +142,12 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
     }
   }, [editingPlayerIndex]);
 
-  useEffect(() => {
-    if (editingItemName && itemInputRef.current) {
-      itemInputRef.current.focus();
-    }
-  }, [editingItemName]);
+  // Commented out as it's no longer relevant
+  // useEffect(() => {
+  //   if (editingItemName && itemInputRef.current) {
+  //     itemInputRef.current.focus();
+  //   }
+  // }, [editingItemName]);
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm space-y-4">
@@ -255,51 +258,51 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                     <div key={item.id} className="grid grid-cols-12 gap-2 items-end w-full">
                       <div className="col-span-5">
                         <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">{t.item}</label>
-                        {editingItemName && editingItemName.playerIndex === index && editingItemName.itemIndex === itemIndex ? (
-                          <input
-                            ref={itemInputRef}
-                            type="text"
-                            value={item.name}
-                            onChange={e => updateConsumable(index, itemIndex, 'name', e.target.value)}
-                            onBlur={() => setEditingItemName(null)}
-                            onKeyDown={e => { if (e.key === 'Enter') setEditingItemName(null); }}
+                        <Ariakit.ComboboxProvider
+                          value={item.name}
+                          setValue={value => updateConsumable(index, itemIndex, 'name', value)}
+                        >
+                          <Ariakit.Combobox
                             className="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            placeholder="Select or type an item"
                           />
-                        ) : (
-                          <span
-                            className="w-full block px-3 py-2 text-sm border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white cursor-pointer"
-                            onClick={() => setEditingItemName({ playerIndex: index, itemIndex })}
-                            tabIndex={0}
-                            onKeyDown={e => {
-                              if (e.key === 'Enter' || e.key === ' ') setEditingItemName({ playerIndex: index, itemIndex });
-                            }}
-                            role="button"
-                            aria-label="Edit item name"
+                          <Ariakit.ComboboxPopover
+                            className="bg-white dark:bg-gray-700 border rounded shadow-md max-h-60 overflow-auto z-10 w-full"
                           >
-                            {item.name}
-                          </span>
-                        )}
+                            {["Coke", "Nước Suối", "Bò Húc", "Bánh Mì", "Mì Xào", "Trà Sữa", "Trà Chanh"].map(option => (
+                              <Ariakit.ComboboxItem
+                                key={option}
+                                value={option}
+                                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer text-gray-900 dark:text-white"
+                              >
+                                {option}
+                              </Ariakit.ComboboxItem>
+                            ))}
+                          </Ariakit.ComboboxPopover>
+                        </Ariakit.ComboboxProvider>
                       </div>
 
                       <div className="col-span-3">
                         <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">{t.quantity}</label>
-                        <input
-                          type="number"
-                          min="1"
+                        <NumericFormat
                           value={item.quantity}
-                          onChange={(e) => updateConsumable(index, itemIndex, 'quantity', parseInt(e.target.value))}
+                          onValueChange={(values: { value: string }) => updateConsumable(index, itemIndex, 'quantity', values.value ? parseInt(values.value) : 1)}
+                          allowNegative={false}
+                          decimalScale={0}
                           className="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                          customInput={props => <input {...props} type="number" min="1" />}
                         />
                       </div>
 
                       <div className="col-span-3">
                         <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">{t.cost}</label>
-                        <input
-                          type="number"
-                          min="0"
+                        <NumericFormat
                           value={item.costPerUnit}
-                          onChange={(e) => updateConsumable(index, itemIndex, 'costPerUnit', parseInt(e.target.value))}
+                          onValueChange={(values: { value: string }) => updateConsumable(index, itemIndex, 'costPerUnit', values.value ? parseInt(values.value) : 15)}
+                          allowNegative={false}
+                          decimalScale={0}
                           className="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                          customInput={props => <input {...props} type="number" min="15" step="5" />}
                         />
                       </div>
 

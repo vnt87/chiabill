@@ -146,7 +146,7 @@ export function BillSummary({ data }: BillSummaryProps) {
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-gray-600 dark:text-gray-400">{t.baseAmount}</span>
+          <span className="text-gray-600 dark:text-gray-400">{t.baseAmount} (k)</span>
           <span className="font-medium dark:text-white">{formatCurrency(data.totalAmount)}</span>
         </div>
 
