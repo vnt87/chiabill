@@ -105,7 +105,8 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
     playerIndex: number,
     consumableIndex: number,
     field: keyof ConsumableItem,
-    value: string | number
+    value: string | number,
+    additionalUpdates?: Partial<ConsumableItem>
   ) => {
     const newPlayers = [...players];
     const consumable = newPlayers[playerIndex].consumables[consumableIndex];
@@ -119,6 +120,11 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
         consumable[field] = value as number;
         break;
     }
+    
+    if (additionalUpdates) {
+      Object.assign(consumable, additionalUpdates);
+    }
+    
     onPlayerChange(newPlayers);
   };
 
@@ -260,7 +266,19 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                         <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">{t.item}</label>
                         <Ariakit.ComboboxProvider
                           value={item.name}
-                          setValue={value => updateConsumable(index, itemIndex, 'name', value)}
+                          setValue={value => {
+                            const costMap: Record<string, number> = {
+                              "Coke": 30,
+                              "Nước Suối": 20,
+                              "Bò Húc": 30,
+                              "Bánh Mì": 40,
+                              "Mì Xào": 45,
+                              "Trà Sữa": 30,
+                              "Trà Chanh": 25
+                            };
+                            const newCost = costMap[value] || item.costPerUnit;
+                            updateConsumable(index, itemIndex, 'name', value, { costPerUnit: newCost });
+                          }}
                         >
                           <Ariakit.Combobox
                             className="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
