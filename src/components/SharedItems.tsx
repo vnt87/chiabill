@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { ConsumableItem, PredefinedItemName } from '../types';
 import { PlusIcon, MinusIcon, InfoIcon } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
