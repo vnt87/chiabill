@@ -191,6 +191,16 @@ export function BillSummary({ data, sharedItems = [] }: BillSummaryProps) {
                     ))}
                   </div>
                 )}
+                {sharedItems.length > 0 && (
+                  <div className="text-sm text-gray-500 dark:text-gray-500 pl-4">
+                    {sharedItems.map((item, idx) => (
+                      <div key={`${item.name}-${idx}`} className="flex justify-between">
+                        <span>{item.name} ({item.quantity}/{participatingPlayers.length})</span>
+                        <span>{formatCurrency((item.quantity * item.costPerUnit) / participatingPlayers.length)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}

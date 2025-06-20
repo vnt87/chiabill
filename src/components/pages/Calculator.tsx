@@ -33,12 +33,7 @@ export function Calculator() {
       players: initialPlayers
     };
   });
-  const [sharedItems, setSharedItems] = useState<ConsumableItem[]>([{
-    id: `shared-item-${Date.now()}-${Math.floor(Math.random() * 100000)}`,
-    name: "Nước Suối",
-    quantity: 1,
-    costPerUnit: 20
-  }]);
+  const [sharedItems, setSharedItems] = useState<ConsumableItem[]>([]);
 
   // Track guest player count for unique default names
   const [guestPlayerCount, setGuestPlayerCount] = useState(1);
