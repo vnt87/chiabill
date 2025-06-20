@@ -11,6 +11,8 @@ export const vi = {
   startTime: 'Giờ Vào',
   endTime: 'Giờ Ra',
   additionalItems: 'Đồ Thêm',
+  sharedItems: 'Đồ chia đều',
+  sharedItemsTooltip: 'Đồ thêm vào mục này sẽ chia đều cho tất cả',
   item: 'Món',
   quantity: 'Số Lượng',
   cost: 'Giá (k)',
@@ -24,6 +26,8 @@ export const vi = {
   placeholder: {
     totalAmount: 'Nhập tổng tiền'
   },
+  addSharedItemButton: 'Thêm Đồ Chung',
+  addSharedItemButtonLabel: 'Thêm món đồ chung mới',
   exportAsImage: 'Xuất Thành Ảnh',
   navigation: {
     calculator: 'Tính Tiền',

@@ -11,6 +11,8 @@ export const en = {
   startTime: 'Start Time',
   endTime: 'End Time',
   additionalItems: 'Additional Items',
+  sharedItems: 'Shared Items',
+  sharedItemsTooltip: 'Items added in this section are splitted evenly among participants',
   item: 'Item',
   quantity: 'Quantity',
   cost: 'Cost (k)',
@@ -24,6 +26,8 @@ export const en = {
   placeholder: {
     totalAmount: 'Enter total amount'
   },
+  addSharedItemButton: 'Add Additional Shared Item',
+  addSharedItemButtonLabel: 'Add a new shared item',
   exportAsImage: 'Export as Image',
   navigation: {
     calculator: 'Calculator',

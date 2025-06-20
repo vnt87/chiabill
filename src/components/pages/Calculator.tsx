@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { PlayerSelection } from '../PlayerSelection';
 import { BillSummary } from '../BillSummary';
-import { Player, BillData } from '../../types';
+import { SharedItems } from '../SharedItems';
+import { Player, BillData, ConsumableItem, PREDEFINED_ITEMS } from '../../types';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 let playerIdCounter = 1;
@@ -32,6 +33,12 @@ export function Calculator() {
       players: initialPlayers
     };
   });
+  const [sharedItems, setSharedItems] = useState<ConsumableItem[]>([{
+    id: `shared-item-${Date.now()}-${Math.floor(Math.random() * 100000)}`,
+    name: "Nước Suối",
+    quantity: 1,
+    costPerUnit: 20
+  }]);
 
   // Track guest player count for unique default names
   const [guestPlayerCount, setGuestPlayerCount] = useState(1);
@@ -197,11 +204,15 @@ export function Calculator() {
           onAddPlayer={handleAddPlayer}
           onRemovePlayer={handleRemovePlayer}
         />
+        <SharedItems
+          items={sharedItems}
+          onItemsChange={setSharedItems}
+        />
       </div>
 
       {/* Right Column - Summary */}
       <div className="lg:col-span-4">
-        <BillSummary data={billData} />
+        <BillSummary data={billData} sharedItems={sharedItems} />
       </div>
     </div>
   );

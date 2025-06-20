@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { BillData, Player } from '../types';
+import { BillData, Player, ConsumableItem } from '../types';
 import { differenceInMinutes, parse } from 'date-fns';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Toast } from './Toast';
@@ -10,9 +10,10 @@ import { Link } from 'react-router-dom';
 
 interface BillSummaryProps {
   data: BillData;
+  sharedItems?: ConsumableItem[];
 }
 
-export function BillSummary({ data }: BillSummaryProps) {
+export function BillSummary({ data, sharedItems = [] }: BillSummaryProps) {
   const { t } = useLanguage();
   const summaryRef = useRef<HTMLDivElement>(null);
   const exportButtonRef = useRef<HTMLButtonElement>(null);
@@ -101,27 +102,39 @@ export function BillSummary({ data }: BillSummaryProps) {
       sum + (item.quantity * item.costPerUnit), 0);
   };
 
+  const calculateSharedItemsCost = (): number => {
+    return sharedItems
+      .filter(item => item.selected && item.assignedPlayer === 'ALL')
+      .reduce((sum, item) => sum + (item.quantity * item.costPerUnit), 0);
+  };
+
   const calculatePlayerShare = (player: Player): number => {
     // Calculate total consumables cost for all players
-    const totalConsumablesCost = participatingPlayers.reduce((sum, p) => 
+    const totalIndividualConsumablesCost = participatingPlayers.reduce((sum, p) => 
       sum + calculatePlayerConsumables(p), 0);
     
-    // The base amount should be total amount minus consumables
-    const baseAmount = Math.max(0, data.totalAmount - totalConsumablesCost);
+    // Calculate total cost of shared items
+    const totalSharedItemsCost = calculateSharedItemsCost();
     
-    // Get player's consumables cost
+    // The base amount should be total amount minus all consumables (individual and shared)
+    const baseAmount = Math.max(0, data.totalAmount - totalIndividualConsumablesCost - totalSharedItemsCost);
+    
+    // Get player's individual consumables cost
     const playerConsumables = calculatePlayerConsumables(player);
     
-    // If we have valid time data, use time-based calculation
+    // Calculate player's share of shared items (split evenly)
+    const sharedItemsShare = totalSharedItemsCost / participatingPlayers.length;
+    
+    // If we have valid time data, use time-based calculation for base amount
     if (totalPlayerMinutes > 0) {
       const playerTime = calculatePlayerTime(player);
       const baseShare = (baseAmount * playerTime) / totalPlayerMinutes;
-      return baseShare + playerConsumables;
+      return baseShare + playerConsumables + sharedItemsShare;
     }
     
     // If no valid time data, split base amount equally
     const equalShare = baseAmount / participatingPlayers.length;
-    return equalShare + playerConsumables;
+    return equalShare + playerConsumables + sharedItemsShare;
   };
 
   const formatCurrency = (amount: number): string => {
