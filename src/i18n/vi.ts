@@ -49,6 +49,7 @@ export const vi = {
   sessionInfo: 'Thông Tin Chơi',
   noTimeData: 'Không có thông tin giờ',
   urlCopied: 'Đã sao chép link!',
+  shareThisBill: 'Link chia sẻ:',
   copyShareLink: 'Sao Chép Link Chia Sẻ',
   failedToLoad: 'Không tải được hóa đơn',
   billNotFound: 'Không tìm thấy hóa đơn',

@@ -213,13 +213,13 @@ export function BillSummary({ data, sharedItems = [] }: BillSummaryProps) {
 
       {shareUrl && (
         <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mt-4">
-          <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">Share this bill:</div>
+          <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t.shareThisBill}</div>
           <div className="flex items-center gap-2">
             <input
               type="text"
               readOnly
               value={shareUrl}
-              className="flex-1 bg-white dark:bg-gray-800 text-sm p-2 rounded border dark:border-gray-600"
+              className="flex-1 bg-white dark:bg-gray-800 text-gray-800 dark:text-white text-sm p-2 rounded border dark:border-gray-600"
               onClick={(e) => e.currentTarget.select()}
             />
             <button
@@ -227,7 +227,7 @@ export function BillSummary({ data, sharedItems = [] }: BillSummaryProps) {
                 navigator.clipboard.writeText(shareUrl);
                 setShowToast(true);
               }}
-              className="p-2 bg-gray-200 dark:bg-gray-600 rounded hover:bg-gray-300 dark:hover:bg-gray-500"
+              className="p-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-500"
             >
               Copy
             </button>

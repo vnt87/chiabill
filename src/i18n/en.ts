@@ -49,6 +49,7 @@ export const en = {
   sessionInfo: 'Session Information',
   noTimeData: 'No time data',
   urlCopied: 'Link copied to clipboard!',
+  shareThisBill: 'Share this bill:',
   copyShareLink: 'Copy Share Link',
   failedToLoad: 'Failed to load bill',
   billNotFound: 'Bill not found',
