@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { ConsumableItem, PREDEFINED_ITEMS, PredefinedItemName } from '../types';
+import { ConsumableItem, PredefinedItemName } from '../types';
 import { PlusIcon, MinusIcon, InfoIcon } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import * as Ariakit from '@ariakit/react';
@@ -12,7 +12,6 @@ interface SharedItemsProps {
 
 export function SharedItems({ items, onItemsChange }: SharedItemsProps) {
   const { t } = useLanguage();
-  const itemInputRef = useRef<HTMLInputElement>(null);
 
   const addSharedItem = () => {
     const id = `shared-item-${Date.now()}-${Math.floor(Math.random() * 100000)}`;

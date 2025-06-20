@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { PlayerSelection } from '../PlayerSelection';
 import { BillSummary } from '../BillSummary';
 import { SharedItems } from '../SharedItems';
-import { Player, BillData, ConsumableItem, PREDEFINED_ITEMS } from '../../types';
+import { Player, BillData, ConsumableItem } from '../../types';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 let playerIdCounter = 1;
