@@ -220,15 +220,17 @@ input[type="date"]::-webkit-date-and-time-value {
   --page: #f7f7f7;
   --card: #ffffff;
   --hairline: #c6c6c6;
-  --glow-rgb: 239 52 42;
+  --glow-rgb: 252 192 0;
   --focus-ring: 13 110 253;
   --wnt-red: #ef342a;
   --wnt-red-dark: #cb2c24;
   --wnt-yellow: #fcc000;
+  --paid-accent: #15803d;
+  --paid-accent-foreground: #ffffff;
   --paid-progress-track: #e6e6e6;
   --paid-progress-segment: #c6c6c6;
   --paid-progress-fill: #d89f00;
-  --paid-progress-complete: #16803c;
+  --paid-progress-complete: var(--paid-accent);
 }
 
 .dark {
@@ -236,10 +238,12 @@ input[type="date"]::-webkit-date-and-time-value {
   --card: #1d1d1d;
   --hairline: #333333;
   --focus-ring: 110 168 254;
+  --paid-accent: #4ade80;
+  --paid-accent-foreground: #052e16;
   --paid-progress-track: #1d1d1d;
   --paid-progress-segment: #333333;
   --paid-progress-fill: var(--wnt-yellow);
-  --paid-progress-complete: #4ade80;
+  --paid-progress-complete: var(--paid-accent);
 }
 
 body {
@@ -400,23 +404,23 @@ a[class*=' bg-blue-']:focus-visible {
 }
 
 .lever:checked {
-  background: var(--wnt-yellow);
+  background: var(--paid-accent);
 }
 
 .lever:checked::before {
-  background: #101010;
+  background: var(--paid-accent-foreground);
   transform: translateX(1.25rem);
 }
 
 [role='switch'][data-state='checked'] {
-  background-color: var(--wnt-yellow);
+  background-color: var(--paid-accent);
 }
 
 /* The "Paid" chip: yellow with a cut corner, dropping on when someone is marked paid */
 .chip {
   padding: 0 0.625rem;
-  background: var(--wnt-yellow);
-  color: #101010;
+  background: var(--paid-accent);
+  color: var(--paid-accent-foreground);
   font-weight: 600;
   line-height: 1.5;
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%);

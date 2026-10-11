@@ -229,7 +229,7 @@ export function BillDetails({ id }: BillDetailsProps) {
               {t.createdOn} {bill.created_at ? formatDate(bill.created_at, 'MMMM d, yyyy HH:mm') : t.noDate}
             </div>
           </div>
-          <div className="text-3xl font-bold text-wnt-red dark:text-wnt-yellow">
+          <div className="text-3xl font-bold text-green-700 dark:text-green-400">
             <span className="mr-2 font-sans text-sm font-medium text-slate-500 dark:text-slate-400">{t.total}</span>
             <Odometer value={`${bill.totalAmount.toLocaleString()}k`} />
           </div>
@@ -322,7 +322,7 @@ export function BillDetails({ id }: BillDetailsProps) {
                   )}
                 </div>
                 {player.consumables.length > 0 && (
-                  <div className="mt-3 rounded-none bg-slate-50 px-3 py-3 dark:bg-slate-900/60">
+                  <div className="mt-3 rounded-none px-3 py-3">
                     <div className="mb-2 text-sm font-medium text-slate-800 dark:text-slate-200">{t.additionalItems}</div>
                     <ul className="space-y-1 text-sm text-slate-600 dark:text-slate-400">
                       {player.consumables.map((item) => (
@@ -401,7 +401,7 @@ export function BillDetails({ id }: BillDetailsProps) {
               <button
                 type="button"
                 onClick={() => navigate('/calculator', { state: { initialData: bill } })}
-                className="inline-flex items-center justify-center gap-2 rounded-none bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700 active:scale-[0.99] dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+                className="inline-flex items-center justify-center gap-2 rounded-none bg-green-700 px-4 py-2 text-white transition hover:bg-green-800 active:scale-[0.99] dark:bg-green-600 dark:hover:bg-green-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500/40"
               >
                 <RefreshCw size={18} />
                 <RollingText>{t.actions.recalculate}</RollingText>

@@ -267,7 +267,7 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                   </div>
                   
                   {player.consumables?.map((item, itemIndex) => (
-                    <div key={item.id} className="grid grid-cols-12 gap-2 items-end w-full rounded-none bg-white p-2 dark:bg-slate-900">
+                    <div key={item.id} className="grid grid-cols-12 gap-2 items-end w-full rounded-none p-2">
                       <div className="col-span-12 sm:col-span-5">
                         <label htmlFor={`player-item-name-${item.id}`} className="block text-xs text-slate-600 dark:text-slate-400 mb-1">{t.item}</label>
                         <Ariakit.ComboboxProvider
