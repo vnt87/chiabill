@@ -1,26 +1,28 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getRecentBills, deleteBill } from '../../lib/api';
 import { useDateUtils } from '../../lib/dateUtils';
-import { BillData } from '../../types';
+import { BillWithMetadata, getPaidProgress } from '../../types';
+import { readBillsCache, writeBillsCache, etagForRevision } from '../../lib/billsCache';
+import { fillTemplate } from '../../lib/utils';
+import { PaidProgress } from '../ui/PaidProgress';
+import { Odometer } from '../ui/Odometer';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { Trash2, ChevronLeft, ChevronRight, Search, Calendar } from 'lucide-react';
+import { Trash2, ChevronLeft, ChevronRight, Search, Calendar, ArrowUpRight } from 'lucide-react';
 import { Skeleton } from '../ui/Skeleton';
 import { Link } from 'react-router-dom';
 import { RollingText } from '../ui/RollingText';
 import { SpotlightCard } from '../ui/SpotlightCard';
-
-interface BillWithMetadata extends BillData {
-  id: string;
-  created_at: string;
-}
 
 const ITEMS_PER_PAGE = 9;
 
 export function History() {
   const { t } = useLanguage();
   const { formatDate, formatTime, formatDuration } = useDateUtils();
-  const [bills, setBills] = useState<BillWithMetadata[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // Render the cached list immediately; the server confirms it is still current (304) or replaces it.
+  const [cached] = useState(readBillsCache);
+  const [bills, setBills] = useState<BillWithMetadata[]>(cached?.bills ?? []);
+  const [etag, setEtag] = useState(cached?.etag ?? '');
+  const [isLoading, setIsLoading] = useState(cached === null);
   const [error, setError] = useState<string | null>(null);
 
   // Pagination and Filter states
@@ -29,12 +31,15 @@ export function History() {
   const [filterParticipant, setFilterParticipant] = useState('');
 
   const loadBills = async () => {
-    setIsLoading(true);
     setError(null);
 
     try {
-      const recentBills = await getRecentBills();
-      setBills(recentBills);
+      const result = await getRecentBills(etag || undefined);
+      if (result.status === 'updated') {
+        setBills(result.bills);
+        setEtag(result.etag);
+        if (result.etag) writeBillsCache({ etag: result.etag, bills: result.bills });
+      }
     } catch (err) {
       setError(t.historyLoadError);
       console.error(err);
@@ -50,8 +55,12 @@ export function History() {
   const handleDelete = async (id: string) => {
     if (window.confirm(t.actions.confirmDelete)) {
       try {
-        await deleteBill(id);
-        await loadBills();
+        const { rev } = await deleteBill(id);
+        const remaining = bills.filter((bill) => bill.id !== id);
+        const nextEtag = rev ? etagForRevision(rev) : '';
+        setBills(remaining);
+        setEtag(nextEtag);
+        if (nextEtag) writeBillsCache({ etag: nextEtag, bills: remaining });
       } catch (err) {
         console.error('Failed to delete bill:', err);
         setError(t.historyDeleteError);
@@ -114,7 +123,8 @@ export function History() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6 text-slate-900 dark:text-white">{t.navigation.history}</h1>
+      <h1 className="font-heading text-3xl font-bold text-slate-900 dark:text-white">{t.navigation.history}</h1>
+      <div className="stripe mb-6 mt-2" aria-hidden="true" />
 
       <SpotlightCard as="section" className="mb-6 rounded-none border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800/80">
         <div className="flex flex-col gap-4 md:flex-row md:items-end">
@@ -230,6 +240,7 @@ export function History() {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-6">
             {paginatedBills.map((bill) => {
               const participants = bill.players.filter((player) => player.participated);
+              const { paid, total } = getPaidProgress(bill.players);
               const previewNames = participants.slice(0, 3).map((player) => player.name).join(', ');
 
               return (
@@ -251,14 +262,16 @@ export function History() {
                     to={`/bill/${bill.id}`}
                     className="block h-full rounded-none p-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
                   >
-                    <div className="pr-10 text-sm text-slate-500 dark:text-slate-400">
-                      {bill.created_at ? formatDate(bill.created_at, 'MMM d, yyyy h:mm a') : t.noDate}
+                    <div className="pr-10">
+                      <span className="inline-block rounded-full border border-wnt-red px-2.5 py-0.5 text-xs font-medium text-wnt-red dark:border-wnt-red dark:text-[#ff7a72]">
+                        {bill.created_at ? formatDate(bill.created_at, 'MMM d, yyyy h:mm a') : t.noDate}
+                      </span>
                     </div>
 
                     <div className="mt-3 flex items-start justify-between gap-4">
                       <div>
-                        <p className="text-2xl font-semibold text-slate-900 dark:text-white">
-                          {bill.totalAmount.toLocaleString()}k
+                        <p className="text-3xl font-bold text-slate-900 dark:text-white">
+                          <Odometer value={`${bill.totalAmount.toLocaleString()}k`} />
                         </p>
                         <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
                           {getSessionSummary(bill)}
@@ -279,8 +292,17 @@ export function History() {
                       </p>
                     </div>
 
+                    <PaidProgress
+                      className="mt-4"
+                      size="sm"
+                      paid={paid}
+                      total={total}
+                      label={paid === total ? t.allPaid : fillTemplate(t.paidProgress, { paid, total })}
+                    />
+
                     <span className="mt-4 inline-flex items-center text-sm font-medium text-blue-600 transition group-hover:text-blue-700 dark:text-blue-400 dark:group-hover:text-blue-300">
                       {t.viewDetails}
+                      <ArrowUpRight size={16} className="ml-1 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
                     </span>
                   </Link>
                 </SpotlightCard>

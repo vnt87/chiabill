@@ -15,6 +15,8 @@ export interface Player {
   endTime: string;
   consumables: ConsumableItem[];
   isFullSession: boolean;
+  paid?: boolean;
+  paidAt?: string;
 }
 
 export interface BillData {
@@ -24,6 +26,19 @@ export interface BillData {
   sessionDurationHours?: number;
   sharedItems?: ConsumableItem[];
   players: Player[];
+}
+
+export interface BillWithMetadata extends BillData {
+  id: string;
+  created_at: string;
+}
+
+export function getPaidProgress(players: Player[]): { paid: number; total: number } {
+  const participants = players.filter((player) => player.participated);
+  return {
+    paid: participants.filter((player) => player.paid).length,
+    total: participants.length,
+  };
 }
 
 export const PREDEFINED_ITEMS = [

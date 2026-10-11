@@ -1,0 +1,58 @@
+/*
+ * Tailwind v4 theme extracted from https://worldnineballtour.com/ on 2026-10-11T05:53:17.167Z
+ * dembrandt v0.35.0
+ *
+ * Observed values only. Every token below was measured on the page; no
+ * shades, states or scale steps were generated. Tailwind defaults still
+ * apply for anything not listed here, so extend rather than replace.
+ *
+ * This is a draft to check, not a source of truth. Each token carries the
+ * evidence behind it; read down the counts and drop what the page only did
+ * once before you build on this file.
+ */
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-background: #ffffff;  /* semantic */
+  --color-text: #333333;        /* semantic */
+  --color-primary: #0d6efd;     /* semantic */
+  --color-accent: #ef342a;      /* semantic */
+  --color-brand-1: #c6c6c6;     /* palette, 23x, high confidence */
+  --color-brand-2: #101010;     /* palette, 1x, medium confidence */
+
+  /* Typography */
+  --font-kanit: Kanit, Arial, Helvetica;  /* text */
+  --text-text: 32px;                      /* text */
+  --text-text--line-height: 1;
+  --text-body: 24px;                      /* body */
+  --text-body--line-height: 1;
+  --text-heading-2: 22.4px;               /* heading-2 */
+  --text-heading-2--line-height: 1;
+  --text-link: 19.2px;                    /* link */
+  --text-link--line-height: 1;
+  --text-ui: 16px;                        /* ui */
+  --text-ui--line-height: 1.5;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-normal: 400;
+  --font-weight-light: 300;
+
+  /* Spacing */
+  --spacing: 8px;  /* 8px scale */
+
+  /* Radius */
+  --radius-sm: 8px;   /* 16x */
+  --radius-md: 16px;  /* 62x */
+
+  /* Shadows */
+  --shadow-sm: rgba(0, 0, 0, 0.2) 0px 4px 10px 0px;
+  --shadow-md: rgba(0, 0, 0, 0.3) 0px 10px 30px 0px;
+
+  /* Breakpoints */
+  --breakpoint-sm: 98px;
+  --breakpoint-md: 576px;
+  --breakpoint-lg: 600px;
+  --breakpoint-xl: 673px;
+  --breakpoint-2xl: 768px;
+}

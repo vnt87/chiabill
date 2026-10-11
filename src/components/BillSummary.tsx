@@ -159,6 +159,7 @@ export function BillSummary({ data, sharedItems = [], validationErrors = [], isV
   return (
     <SpotlightCard
       as="aside"
+      plain
       ref={summaryRef}
       aria-label={t.billSummary}
       className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white shadow-[0_-12px_40px_rgba(15,23,42,0.16)] dark:border-slate-800 dark:bg-slate-900 lg:sticky lg:inset-auto lg:top-6 lg:z-auto lg:rounded-none lg:border lg:shadow-none"
@@ -176,7 +177,7 @@ export function BillSummary({ data, sharedItems = [], validationErrors = [], isV
             <ReceiptText size={20} aria-hidden="true" />
           </span>
           <span className="min-w-0">
-            <span className="block text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{t.billSummary}</span>
+            <span className="block text-sm font-semibold text-slate-500 dark:text-slate-400">{t.billSummary}</span>
             <span className="block truncate text-lg font-bold text-slate-950 dark:text-white">{formatCurrency(data.totalAmount)}</span>
           </span>
         </span>

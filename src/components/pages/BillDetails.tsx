@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react';
-import { getBill, deleteBill } from '../../lib/api';
+import { getBill, deleteBill, setPlayerPaid } from '../../lib/api';
+import { readBillsCache, writeBillsCache, etagForRevision } from '../../lib/billsCache';
+import { fillTemplate } from '../../lib/utils';
+import { PaidProgress } from '../ui/PaidProgress';
+import { Odometer } from '../ui/Odometer';
 import { useDateUtils } from '../../lib/dateUtils';
-import { BillData, Player } from '../../types';
+import { BillWithMetadata, Player, getPaidProgress } from '../../types';
 import { parse } from 'date-fns';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Trash2, Check as CheckIcon, Copy as ClipboardCopyIcon, RefreshCw } from 'lucide-react';
 import { RollingText } from '../ui/RollingText';
 import { SpotlightCard } from '../ui/SpotlightCard';
-
-interface BillWithMetadata extends BillData {
-  id: string;
-  created_at: string;
-}
 
 interface BillDetailsProps {
   id: string;
@@ -25,6 +24,8 @@ export function BillDetails({ id }: BillDetailsProps) {
   const [bill, setBill] = useState<BillWithMetadata | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  // The player just marked paid; the steam and stamp animations play for this one only.
+  const [justPaid, setJustPaid] = useState<number | null>(null);
   const currentURL = window.location.href;
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -115,6 +116,39 @@ export function BillDetails({ id }: BillDetailsProps) {
     }
   };
 
+  const handleTogglePaid = async (playerIndex: number, paid: boolean) => {
+    if (!bill) return;
+    const previous = bill;
+    const players = bill.players.map((player, index) => {
+      if (index !== playerIndex) return player;
+      const { paid: _paid, paidAt: _paidAt, ...rest } = player;
+      return paid ? { ...rest, paid: true, paidAt: new Date().toISOString() } : rest;
+    });
+    setBill({ ...bill, players });
+    setError(null);
+    if (paid) {
+      setJustPaid(playerIndex);
+      setTimeout(() => setJustPaid((current) => (current === playerIndex ? null : current)), 1200);
+    }
+
+    try {
+      const result = await setPlayerPaid(id, playerIndex, paid);
+      setBill(result.bill);
+      // Keep the history cache in step so it doesn't refetch after our own change.
+      const cache = readBillsCache();
+      if (cache) {
+        writeBillsCache({
+          etag: etagForRevision(result.rev),
+          bills: cache.bills.map((cachedBill) => (cachedBill.id === id ? result.bill : cachedBill)),
+        });
+      }
+    } catch (err) {
+      setBill(previous);
+      setError(t.paymentUpdateFailed);
+      console.error(err);
+    }
+  };
+
   const handleCopyLink = async () => {
     try {
       setError(null);
@@ -163,6 +197,8 @@ export function BillDetails({ id }: BillDetailsProps) {
     );
   }
 
+  const paidProgress = getPaidProgress(bill.players);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
@@ -187,15 +223,26 @@ export function BillDetails({ id }: BillDetailsProps) {
 
         <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <h1 id="bill-details-heading" className="text-2xl font-bold mb-2 text-slate-900 dark:text-white">{t.billDetails}</h1>
+            <h1 id="bill-details-heading" className="font-heading text-3xl font-bold text-slate-900 dark:text-white">{t.billDetails}</h1>
+            <div className="stripe mb-2 mt-2" aria-hidden="true" />
             <div className="text-sm text-slate-500 dark:text-slate-400">
               {t.createdOn} {bill.created_at ? formatDate(bill.created_at, 'MMMM d, yyyy HH:mm') : t.noDate}
             </div>
           </div>
-          <div className="text-xl font-bold text-slate-900 dark:text-white">
-            {t.total}: {bill.totalAmount.toLocaleString()}k
+          <div className="text-3xl font-bold text-wnt-red dark:text-wnt-yellow">
+            <span className="mr-2 font-sans text-sm font-medium text-slate-500 dark:text-slate-400">{t.total}</span>
+            <Odometer value={`${bill.totalAmount.toLocaleString()}k`} />
           </div>
         </div>
+
+        {paidProgress.total > 0 && (
+          <PaidProgress
+            className="mb-6"
+            paid={paidProgress.paid}
+            total={paidProgress.total}
+            label={paidProgress.paid === paidProgress.total ? t.allPaid : fillTemplate(t.paidProgress, paidProgress)}
+          />
+        )}
 
         <section className="mb-6 rounded-none bg-slate-50 px-4 py-4 dark:bg-slate-900/60" aria-labelledby="bill-session-info">
           <h2 id="bill-session-info" className="mb-2 text-lg font-semibold text-slate-900 dark:text-white">{t.sessionInfo}</h2>
@@ -225,14 +272,36 @@ export function BillDetails({ id }: BillDetailsProps) {
         <section className="mb-6" aria-labelledby="bill-participant-breakdown">
           <h2 id="bill-participant-breakdown" className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">{t.participantBreakdown}</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {bill.players.filter(p => p.participated).map((player) => (
-              <SpotlightCard as="article" key={player.id} className="rounded-none border border-slate-200 p-4 shadow-sm dark:border-slate-700">
+            {bill.players.map((player, playerIndex) => ({ player, playerIndex })).filter(({ player }) => player.participated).map(({ player, playerIndex }) => (
+              <SpotlightCard as="article" key={player.id ?? playerIndex} className="rounded-none border border-slate-200 p-4 shadow-sm dark:border-slate-700">
                 <div className="flex justify-between items-center">
                   <span className="font-medium text-slate-900 dark:text-white">{player.name}</span>
                   <span className="font-medium text-blue-600 dark:text-blue-400">
                     {formatCurrency(calculatePlayerShare(player, bill.players.filter(p => p.participated)))}
                   </span>
                 </div>
+                <label className="mt-3 flex min-h-11 cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 whitespace-nowrap text-sm font-medium text-slate-800 dark:text-slate-100">
+                  <span className="inline-flex">
+                    <input
+                      type="checkbox"
+                      checked={player.paid === true}
+                      onChange={(event) => void handleTogglePaid(playerIndex, event.target.checked)}
+                      aria-label={fillTemplate(t.markPlayerPaid, { name: player.name })}
+                      className="lever"
+                    />
+                  </span>
+                  <span>{t.paid}</span>
+                  {player.paid && player.paidAt && (
+                    <span className="order-last basis-full text-xs font-normal text-slate-500 dark:text-slate-400 sm:order-none sm:basis-auto">
+                      {fillTemplate(t.paidOn, { date: formatDate(player.paidAt, 'dd/MM HH:mm') })}
+                    </span>
+                  )}
+                  {player.paid && (
+                    <span aria-hidden="true" className={`chip ml-auto text-xs ${justPaid === playerIndex ? 'chip--drop' : ''}`}>
+                      {t.paid}
+                    </span>
+                  )}
+                </label>
                 <div className="mt-2 text-sm text-slate-600 dark:text-slate-400">
                   {player.startTime && player.endTime ? (
                     <>
@@ -304,8 +373,8 @@ export function BillDetails({ id }: BillDetailsProps) {
               <button
                 type="button"
                 onClick={() => void handleCopyLink()}
-                aria-label={t.copyShareLinkLabel}
-                className={`inline-flex items-center justify-center gap-2 rounded-none px-3 py-2 text-sm font-medium transition-colors active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30 ${
+                aria-label={isCopied ? t.urlCopied : t.copyShareLinkLabel}
+                className={`inline-flex items-center justify-center rounded-none p-3 text-sm font-medium transition-colors active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30 ${
                   isCopied 
                     ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                     : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600'
@@ -313,13 +382,11 @@ export function BillDetails({ id }: BillDetailsProps) {
               >
                 {isCopied ? (
                   <>
-                    <CheckIcon className="w-4 h-4" />
-                    <RollingText>{t.urlCopied}</RollingText>
+                    <CheckIcon className="w-4 h-4" aria-hidden="true" />
                   </>
                 ) : (
                   <>
-                    <ClipboardCopyIcon className="w-4 h-4" />
-                    <RollingText>{t.copyShareLink}</RollingText>
+                    <ClipboardCopyIcon className="w-4 h-4" aria-hidden="true" />
                   </>
                 )}
               </button>

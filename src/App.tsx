@@ -16,8 +16,8 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {
       const savedMode = localStorage.getItem('darkMode');
-      const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)')?.matches ?? false;
-      const isDark = savedMode ? savedMode === 'true' : prefersDark;
+      // Light is the default (as on WNT); only an explicit saved choice turns dark mode on.
+      const isDark = savedMode === 'true';
       if (isDark) {
         document.documentElement.classList.add('dark');
       }

@@ -5,12 +5,15 @@ type SpotlightElement = 'article' | 'aside' | 'div' | 'section' | 'form';
 
 interface SpotlightCardProps extends HTMLAttributes<HTMLElement> {
   as?: SpotlightElement;
+  /** Skip the card styling (used where the card must stay flat, like the exported summary). */
+  plain?: boolean;
   children: ReactNode;
 }
 
 export const SpotlightCard = forwardRef<HTMLElement, SpotlightCardProps>(function SpotlightCard(
   {
     as = 'div',
+    plain = false,
     className = '',
     children,
     onPointerMove,
@@ -46,7 +49,7 @@ export const SpotlightCard = forwardRef<HTMLElement, SpotlightCardProps>(functio
     {
       ...props,
       ref: cardRef,
-      className: `spotlight-surface ${className}`.trim(),
+      className: `spotlight-surface ${plain ? '' : 'wnt-card'} ${className}`.replace(/\s+/g, ' ').trim(),
       onPointerMove: (event: PointerEvent<HTMLElement>) => {
         handlePointerMove(event);
         onPointerMove?.(event);

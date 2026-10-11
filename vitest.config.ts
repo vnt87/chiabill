@@ -8,6 +8,9 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [react()],
+  define: {
+    __BUILD_NUMBER__: JSON.stringify('test'),
+  },
   test: {
     environment: 'jsdom',
     globals: true,

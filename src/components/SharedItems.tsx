@@ -59,8 +59,8 @@ export function SharedItems({ items, onItemsChange }: SharedItemsProps) {
 
   return (
     <SpotlightCard as="section" aria-labelledby="shared-items-heading" className="rounded-none border border-slate-200 bg-white p-5 sm:p-6 dark:border-slate-800 dark:bg-slate-900 space-y-4">
-      <div>
-        <div className="flex items-center">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center">
           <h2 id="shared-items-heading" className="text-xl font-bold text-slate-950 dark:text-white">{t.sharedItems}</h2>
           <div className="relative ml-2 group">
             <button
@@ -76,6 +76,15 @@ export function SharedItems({ items, onItemsChange }: SharedItemsProps) {
             </div>
           </div>
         </div>
+        <button
+          type="button"
+          onClick={addSharedItem}
+          className="rolling-text-trigger flex min-h-11 shrink-0 items-center gap-2 rounded-none border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-100 active:scale-[0.98] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800"
+          aria-label={t.addSharedItemButtonLabel}
+        >
+          <PlusIcon className="w-4 h-4" aria-hidden="true" />
+          <RollingText>{t.addSharedItemButton}</RollingText>
+        </button>
       </div>
       
       <div className="space-y-2 w-full">
@@ -163,17 +172,6 @@ export function SharedItems({ items, onItemsChange }: SharedItemsProps) {
         ))}
       </div>
 
-      <div className="flex justify-start">
-        <button
-          type="button"
-          onClick={addSharedItem}
-          className="rolling-text-trigger flex min-h-11 items-center gap-2 rounded-none border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-100 active:scale-[0.98] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800"
-          aria-label={t.addSharedItemButtonLabel}
-        >
-          <PlusIcon className="w-4 h-4" aria-hidden="true" />
-          <RollingText>{t.addSharedItemButton}</RollingText>
-        </button>
-      </div>
     </SpotlightCard>
   );
 }

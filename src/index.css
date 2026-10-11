@@ -1,30 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: Kanit, Arial, Helvetica, sans-serif;
+  /* Tabular figures everywhere: amounts and times line up in columns. */
+  font-variant-numeric: tabular-nums;
   -webkit-tap-highlight-color: transparent;
   color-scheme: light;
-  --focus-ring: 37 99 235;
+  --focus-ring: 15 90 58;
 }
 
+/* Display: heavier and slightly condensed, with tight tracking. Optical size
+   follows the font size automatically, so large headings get sharper cuts. */
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  text-transform: uppercase;
-}
-
-button,
-[role='button'],
-[role='tab'] {
-  text-transform: uppercase;
+  font-family: Kanit, Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0;
+  /* WNT sets 1.0; Vietnamese stacked tone marks need more headroom than that. */
+  line-height: 1.15;
 }
 
 .rolling-text {
@@ -32,7 +31,6 @@ button,
   display: inline-block;
   max-width: 100%;
   overflow: hidden;
-  text-transform: uppercase;
   vertical-align: middle;
 }
 
@@ -56,7 +54,7 @@ button,
 .rolling-text__copy--incoming {
   position: absolute;
   inset: 0;
-  transform: translateY(-100%);
+  transform: translateY(-125%);
 }
 
 button:not(:disabled):hover .rolling-text__copy:first-child,
@@ -65,7 +63,7 @@ a:hover .rolling-text__copy:first-child,
 a:focus-visible .rolling-text__copy:first-child,
 [role='tab']:hover .rolling-text__copy:first-child,
 [role='tab']:focus-visible .rolling-text__copy:first-child {
-  transform: translateY(100%);
+  transform: translateY(125%);
 }
 
 button:not(:disabled):hover .rolling-text__copy--incoming,
@@ -84,7 +82,7 @@ a:focus-visible .rolling-text__copy--incoming,
 body {
   margin: 0;
   min-width: 320px;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   line-height: 1.5;
 }
 
@@ -102,10 +100,10 @@ body {
   pointer-events: none;
   content: '';
   opacity: 0;
-  border: 1px solid rgb(59 130 246 / 0.62);
+  border: 1px solid rgb(var(--glow-rgb) / 0.6);
   box-shadow:
-    0 0 20px 1px rgb(37 99 235 / 0.32),
-    inset 0 0 14px rgb(37 99 235 / 0.12);
+    0 0 20px 1px rgb(var(--glow-rgb) / 0.28),
+    inset 0 0 14px rgb(var(--glow-rgb) / 0.1);
   transition: opacity 180ms ease-out;
 }
 
@@ -118,7 +116,7 @@ body {
   opacity: 0;
   background: radial-gradient(
     220px circle at var(--spotlight-x) var(--spotlight-y),
-    rgb(37 99 235 / 0.14),
+    rgb(var(--glow-rgb) / 0.12),
     transparent 72%
   );
   transition: opacity 180ms ease-out;
@@ -159,7 +157,7 @@ button:disabled {
 }
 
 :focus-visible {
-  outline: 3px solid rgb(var(--focus-ring) / 0.45);
+  outline: 2px solid rgb(var(--focus-ring) / 0.95);
   outline-offset: 2px;
 }
 
@@ -197,137 +195,252 @@ button:disabled {
   }
 }
 
-/* Match scoreboard: a compact retro broadcast console, separate from the app's utility surfaces. */
-.match-scoreboard-page {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: clamp(1rem, 3vw, 2.5rem) 0 3rem;
+/* ===== World Nineball Tour look =====
+   Tokens and shapes extracted from worldnineballtour.com (docs/research/wnt). */
+:root {
+  --page: #f7f7f7;
+  --card: #ffffff;
+  --hairline: #c6c6c6;
+  --glow-rgb: 239 52 42;
+  --focus-ring: 13 110 253;
+  --wnt-red: #ef342a;
+  --wnt-red-dark: #cb2c24;
+  --wnt-yellow: #fcc000;
+  --paid-progress-track: #e6e6e6;
+  --paid-progress-segment: #c6c6c6;
+  --paid-progress-fill: #d89f00;
+  --paid-progress-complete: #16803c;
 }
 
-.match-scoreboard-page__topline,
-.scoreboard-shell__header,
-.scoreboard-actionbar,
-.scoreboard-tools,
-.score-confirm-dialog__header,
-.score-confirm-dialog__actions {
+.dark {
+  --page: #101010;
+  --card: #1d1d1d;
+  --hairline: #333333;
+  --focus-ring: 110 168 254;
+  --paid-progress-track: #1d1d1d;
+  --paid-progress-segment: #333333;
+  --paid-progress-fill: var(--wnt-yellow);
+  --paid-progress-complete: #4ade80;
+}
+
+body {
+  background-color: var(--page);
+}
+
+/* Card: one square corner and an L-shaped hairline, as on WNT's cards. */
+.wnt-card.wnt-card,
+.dark .wnt-card.wnt-card {
+  border-style: solid;
+  border-color: var(--hairline);
+  border-width: 0 0 1px 1px;
+  border-radius: 16px 16px 16px 0;
+  background-color: var(--card);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+
+.wnt-card.group:hover {
+  box-shadow: 0 4px 10px rgb(0 0 0 / 0.2);
+}
+
+input:not([type='checkbox']):not([type='radio']),
+select {
+  border-radius: 8px;
+}
+
+/* The yellow band, from WNT's dark / yellow / dark gradient, under page titles. */
+.stripe {
+  width: 7.5rem;
+  height: 4px;
+  background: linear-gradient(to right, #1d1d1d 30%, #fcc000 30% 70%, #1d1d1d 70%);
+}
+
+/* Primary buttons: WNT red with a cut bottom-right corner. Matches buttons whose own class
+   token starts with bg-blue-, so hover:bg-blue-* icon buttons and the switches are left alone. */
+button[class^='bg-blue-']:not(:disabled):not([role='switch']):not([role='checkbox']),
+button[class*=' bg-blue-']:not(:disabled):not([role='switch']):not([role='checkbox']),
+a[class^='bg-blue-'],
+a[class*=' bg-blue-'] {
+  color: #fff;
+  background-color: var(--wnt-red);
+  background-image: linear-gradient(105deg, transparent 38%, rgb(255 255 255 / 0.3) 50%, transparent 62%);
+  background-repeat: no-repeat;
+  background-size: 260% 100%;
+  background-position: 130% 0;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+  transition: background-position 700ms ease-out, background-color 200ms ease, transform 200ms ease;
+}
+
+button[class^='bg-blue-']:not(:disabled):not([role='switch']):not([role='checkbox']):hover,
+button[class*=' bg-blue-']:not(:disabled):not([role='switch']):not([role='checkbox']):hover,
+a[class^='bg-blue-']:hover,
+a[class*=' bg-blue-']:hover {
+  background-color: var(--wnt-red-dark);
+  background-position: -30% 0;
+  transform: translateY(-1px);
+}
+
+button[class^='bg-blue-']:not(:disabled):not([role='switch']):not([role='checkbox']):active,
+button[class*=' bg-blue-']:not(:disabled):not([role='switch']):not([role='checkbox']):active,
+a[class^='bg-blue-']:active,
+a[class*=' bg-blue-']:active {
+  transform: translateY(1px);
+}
+
+/* clip-path would cut off the focus outline, so focused buttons drop the cut corner. */
+button[class^='bg-blue-']:focus-visible,
+button[class*=' bg-blue-']:focus-visible,
+a[class^='bg-blue-']:focus-visible,
+a[class*=' bg-blue-']:focus-visible {
+  clip-path: none;
+}
+
+/* Paid progress: colors follow the current theme, with one segment per player. */
+.segs {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 4px;
+  background: var(--paid-progress-track);
 }
 
-.match-scoreboard-page__topline { margin-bottom: 1rem; }
-.scoreboard-back,
-.scoreboard-refresh,
-.scoreboard-share {
-  display: inline-flex;
-  align-items: center;
-  gap: .45rem;
-  color: rgb(71 85 105);
-  font-size: .72rem;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+.segs[data-complete='true'] {
+  box-shadow: 0 0 0 2px var(--paid-progress-complete);
 }
-.dark .scoreboard-back,
-.dark .scoreboard-refresh,
-.dark .scoreboard-share { color: rgb(203 213 225); }
-.scoreboard-back:hover,
-.scoreboard-share:hover { color: rgb(180 83 9); }
-.scoreboard-refresh,
-.scoreboard-share { border: 0; background: transparent; cursor: pointer; }
 
-.scoreboard-shell {
+.segs[data-complete='true'] .seg__fill {
+  background: var(--paid-progress-complete);
+}
+
+.seg {
   position: relative;
+  flex: 1 1 0;
   overflow: hidden;
-  border: 1px solid rgb(71 85 105 / .8);
-  background:
-    linear-gradient(180deg, rgb(30 41 59) 0%, rgb(15 23 42) 42%, rgb(10 15 28) 100%);
-  box-shadow: 0 24px 60px rgb(15 23 42 / .3), inset 0 1px rgb(255 255 255 / .1);
-  color: rgb(226 232 240);
+  background: var(--paid-progress-segment);
 }
-.scoreboard-shell::before {
+
+.seg__fill {
   position: absolute;
   inset: 0;
-  pointer-events: none;
-  content: '';
-  opacity: .16;
-  background-image: repeating-linear-gradient(0deg, transparent 0 4px, rgb(255 255 255 / .12) 5px);
-  mix-blend-mode: screen;
+  background: var(--paid-progress-fill);
+  transform: scaleX(0);
+  transform-origin: left;
 }
-.scoreboard-shell__lights {
-  display: flex;
-  gap: .5rem;
-  padding: .65rem clamp(1rem, 4vw, 2.5rem) .4rem;
-  border-bottom: 1px solid rgb(255 255 255 / .12);
-}
-.scoreboard-shell__lights i {
-  width: .45rem;
-  height: .45rem;
-  border-radius: 999px;
-  background: rgb(163 230 53);
-  box-shadow: 0 0 10px rgb(163 230 53 / .9);
-}
-.scoreboard-shell__header { padding: 1.4rem clamp(1rem, 4vw, 2.5rem) .75rem; position: relative; }
-.scoreboard-kicker { margin: 0 0 .25rem; color: rgb(251 191 36); font-size: .68rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
-.scoreboard-shell h1 { margin: 0; color: rgb(248 250 252); font-size: clamp(1.35rem, 4vw, 2.25rem); letter-spacing: .06em; }
-.scoreboard-status { display: inline-flex; align-items: center; gap: .45rem; padding: .45rem .65rem; border: 1px solid rgb(148 163 184 / .35); color: rgb(203 213 225); font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
-.scoreboard-status span { width: .45rem; height: .45rem; border-radius: 999px; background: rgb(251 191 36); }
-.scoreboard-status--completed span { background: rgb(74 222 128); box-shadow: 0 0 8px rgb(74 222 128); }
-.scoreboard-status--draft span { background: rgb(251 146 60); }
-.scoreboard-meta { display: flex; flex-wrap: wrap; gap: .65rem 1.5rem; padding: .75rem clamp(1rem, 4vw, 2.5rem); border-top: 1px solid rgb(255 255 255 / .1); border-bottom: 1px solid rgb(255 255 255 / .1); color: rgb(148 163 184); font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-.scoreboard-players { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: clamp(.75rem, 4vw, 3rem); padding: clamp(1.25rem, 5vw, 3.5rem) clamp(1rem, 7vw, 5rem); position: relative; }
-.scoreboard-player { min-width: 0; text-align: center; }
-.scoreboard-player--away { text-align: center; }
-.scoreboard-player__role { margin: 0 0 .45rem; color: rgb(148 163 184); font-size: .65rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
-.scoreboard-player h2 { overflow: hidden; margin: 0; color: rgb(241 245 249); font-size: clamp(1.05rem, 3vw, 1.7rem); text-overflow: ellipsis; white-space: nowrap; }
-.scoreboard-player > span { display: block; margin-top: .25rem; color: rgb(100 116 139); font-family: 'IBM Plex Mono', monospace; font-size: .7rem; }
-.scoreboard-digit { margin-top: 1rem; }
-.scoreboard-digit__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-.scoreboard-digit__window { display: inline-flex; gap: clamp(.2rem, 1vw, .5rem); padding: clamp(.55rem, 2vw, 1rem) clamp(.65rem, 2vw, 1.1rem); border: 1px solid rgb(148 163 184 / .35); background: rgb(2 6 23 / .82); box-shadow: inset 0 0 20px rgb(0 0 0 / .55), 0 5px 0 rgb(2 6 23 / .7); }
-.scoreboard-digit__character { min-width: .75em; color: rgb(254 240 138); font-family: 'IBM Plex Mono', monospace; font-size: clamp(4.4rem, 16vw, 9.5rem); font-weight: 700; line-height: .82; letter-spacing: -.12em; text-shadow: 0 0 4px rgb(254 240 138 / .85), 0 0 18px rgb(250 204 21 / .45); }
-.scoreboard-digit--away .scoreboard-digit__character { color: rgb(253 186 116); text-shadow: 0 0 4px rgb(253 186 116 / .85), 0 0 18px rgb(234 88 12 / .45); }
-.scoreboard-versus { display: grid; justify-items: center; gap: .8rem; color: rgb(251 191 36); font-family: 'IBM Plex Mono', monospace; font-size: .75rem; font-weight: 700; letter-spacing: .16em; }
-.scoreboard-versus i { display: block; width: 1px; height: 5rem; background: linear-gradient(rgb(251 191 36 / 0), rgb(251 191 36 / .8), rgb(251 191 36 / 0)); }
-.scoreboard-controls { display: flex; justify-content: center; gap: .5rem; margin-top: 1rem; }
-.scoreboard-controls button { display: inline-grid; place-items: center; width: 3rem; height: 2.7rem; border: 1px solid rgb(148 163 184 / .5); background: rgb(30 41 59 / .8); color: rgb(226 232 240); cursor: pointer; transition: background 160ms ease, transform 160ms ease; }
-.scoreboard-controls button:hover { background: rgb(180 83 9); transform: translateY(-2px); }
-.scoreboard-actionbar { padding: 1rem clamp(1rem, 4vw, 2.5rem); border-top: 1px solid rgb(255 255 255 / .12); background: rgb(2 6 23 / .5); }
-.scoreboard-actionbar__hint { color: rgb(148 163 184); font-size: .72rem; }
-.score-button { display: inline-flex; align-items: center; justify-content: center; gap: .45rem; min-height: 2.7rem; padding: .65rem .9rem; border: 1px solid transparent; font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
-.score-button:disabled { cursor: not-allowed; opacity: .4; }
-.score-button--confirm { border-color: rgb(251 191 36); background: rgb(180 83 9); color: rgb(255 247 237); }
-.score-button--confirm:hover:not(:disabled) { background: rgb(217 119 6); }
-.score-button--quiet { border-color: rgb(100 116 139 / .6); background: transparent; color: rgb(203 213 225); }
-.score-button--quiet:hover { background: rgb(51 65 85); }
-.scoreboard-tools { align-items: flex-start; padding: .8rem clamp(1rem, 4vw, 2.5rem); border-top: 1px solid rgb(255 255 255 / .08); }
-.score-tool { display: inline-flex; align-items: center; gap: .45rem; border: 0; background: transparent; color: rgb(203 213 225); font-size: .7rem; font-weight: 700; text-transform: uppercase; cursor: pointer; }
-.score-note { width: min(100%, 28rem); margin-left: auto; padding: .75rem; border: 1px solid rgb(251 191 36 / .4); background: rgb(30 41 59 / .75); }
-.score-note > div { display: flex; align-items: center; gap: .35rem; margin-bottom: .5rem; color: rgb(251 191 36); font-size: .68rem; font-weight: 700; text-transform: uppercase; }
-.score-note textarea { display: block; width: 100%; min-height: 4.5rem; padding: .6rem; border: 1px solid rgb(100 116 139 / .6); background: rgb(15 23 42); color: rgb(226 232 240); resize: vertical; }
-.score-note .score-button { margin-top: .55rem; }
-.scoreboard-winner { display: flex; align-items: center; justify-content: center; gap: .45rem; padding: .8rem; border-top: 1px solid rgb(74 222 128 / .35); color: rgb(134 239 172); font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
-.scoreboard-error { max-width: 32rem; margin: 4rem auto; padding: 2rem; border: 1px solid rgb(248 113 113 / .4); background: rgb(254 242 242); color: rgb(127 29 29); text-align: center; }
-.dark .scoreboard-error { background: rgb(69 10 10); color: rgb(254 202 202); }
-.scoreboard-error h1 { margin: 0 0 .5rem; font-size: 1.2rem; }
-.scoreboard-error button { margin-top: 1rem; padding: .65rem 1rem; border: 0; background: rgb(180 83 9); color: white; cursor: pointer; }
-.score-confirm-backdrop { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 1rem; background: rgb(2 6 23 / .76); backdrop-filter: blur(3px); }
-.score-confirm-dialog { width: min(100%, 30rem); padding: 1.4rem; border: 1px solid rgb(251 191 36 / .55); background: rgb(15 23 42); color: rgb(226 232 240); box-shadow: 0 25px 70px rgb(0 0 0 / .4); }
-.score-confirm-dialog__title { display: flex; align-items: center; gap: .5rem; color: rgb(251 191 36); }
-.score-confirm-dialog h2 { margin: 0; font-size: 1rem; }
-.score-confirm-dialog p { color: rgb(148 163 184); font-size: .8rem; }
-.score-icon-button { display: grid; place-items: center; border: 0; background: transparent; color: rgb(148 163 184); cursor: pointer; }
-.score-confirm-dialog__result { display: grid; grid-template-columns: 1fr auto; gap: .45rem 1rem; margin: 1rem 0; padding: .9rem; border: 1px solid rgb(100 116 139 / .5); background: rgb(2 6 23 / .65); font-size: .8rem; }
-.score-confirm-dialog__result strong { color: rgb(254 240 138); font-family: 'IBM Plex Mono', monospace; font-size: 1.25rem; }
-.score-confirm-dialog__actions { justify-content: flex-end; }
 
-@media (max-width: 640px) {
-  .scoreboard-shell__header { align-items: flex-start; flex-direction: column; }
-  .scoreboard-players { grid-template-columns: 1fr; gap: 1rem; }
-  .scoreboard-versus { grid-row: 2; grid-template-columns: 1fr auto 1fr; width: 100%; gap: .6rem; }
-  .scoreboard-versus i { width: 100%; height: 1px; background: linear-gradient(90deg, rgb(251 191 36 / 0), rgb(251 191 36 / .8), rgb(251 191 36 / 0)); }
-  .scoreboard-player--away { grid-row: 3; }
-  .scoreboard-actionbar { align-items: flex-start; flex-direction: column; }
-  .scoreboard-actionbar .score-button { width: 100%; }
-  .score-note { width: 100%; margin-left: 0; }
+.seg[data-filled='true'] .seg__fill {
+  transform: none;
+  animation: seg-fill 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: var(--fill-delay, 0ms);
+}
+
+.seg[data-filled='true'] .seg__fill::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.6) 50%, transparent 65%);
+  background-size: 250% 100%;
+  animation: sheen 1.4s ease-out 1;
+  animation-delay: calc(var(--fill-delay, 0ms) + 500ms);
+}
+
+/* Skeleton: a pale sheen travelling across grey blocks */
+.skeleton {
+  background-image: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.5) 50%, transparent 70%);
+  background-size: 220% 100%;
+  animation: sheen 1.8s linear infinite;
+}
+
+.dark .skeleton {
+  background-image: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.08) 50%, transparent 70%);
+}
+
+/* Paid toggle: grey track, white knob; yellow track and dark knob when on */
+.lever {
+  position: relative;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 1.5rem;
+  min-height: 0;
+  appearance: none;
+  cursor: pointer;
+  border-radius: 9999px;
+  background: #8a8a8a;
+  transition: background-color 200ms ease;
+}
+
+.lever::before {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 1.125rem;
+  height: 1.125rem;
+  content: '';
+  border-radius: 9999px;
+  background: #fff;
+  transition: transform 200ms ease, background-color 200ms ease;
+}
+
+.lever:checked {
+  background: var(--wnt-yellow);
+}
+
+.lever:checked::before {
+  background: #101010;
+  transform: translateX(1.25rem);
+}
+
+[role='switch'][data-state='checked'] {
+  background-color: var(--wnt-yellow);
+}
+
+/* The "Paid" chip: yellow with a cut corner, dropping on when someone is marked paid */
+.chip {
+  padding: 0 0.625rem;
+  background: var(--wnt-yellow);
+  color: #101010;
+  font-weight: 600;
+  line-height: 1.5;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%);
+}
+
+.chip--drop {
+  animation: chip-drop 420ms cubic-bezier(0.3, 1.4, 0.5, 1) both;
+}
+
+/* Page-load reveal, once per session: the header slides down and cards stagger in. */
+.boot .site-header {
+  animation: header-in 500ms ease-out both;
+}
+
+.boot .wnt-card {
+  animation: card-in 500ms ease-out both;
+}
+
+.boot .wnt-card:nth-child(2) { animation-delay: 60ms; }
+.boot .wnt-card:nth-child(3) { animation-delay: 120ms; }
+.boot .wnt-card:nth-child(4) { animation-delay: 180ms; }
+.boot .wnt-card:nth-child(5) { animation-delay: 240ms; }
+.boot .wnt-card:nth-child(n + 6) { animation-delay: 300ms; }
+
+@keyframes sheen { from { background-position: 130% 0; } to { background-position: -130% 0; } }
+@keyframes seg-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes chip-drop {
+  0% { opacity: 0; transform: translateY(-12px) scale(1.3); }
+  60% { opacity: 1; transform: translateY(1px) scale(0.96); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes header-in { from { opacity: 0; transform: translateY(-100%); } to { opacity: 1; transform: none; } }
+@keyframes card-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+/* Decoration stops when the tab is hidden */
+.tab-hidden *,
+.tab-hidden *::before,
+.tab-hidden *::after {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
 }
