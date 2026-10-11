@@ -167,6 +167,25 @@ button:disabled {
   color-scheme: dark;
 }
 
+/* Safari/iOS gives native date/time inputs an intrinsic min-width and its own
+   empty-state height, which makes them overflow grid/flex cells and overlap. */
+input[type="time"],
+input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 2.75rem;
+  line-height: 1.5;
+}
+
+input[type="time"]::-webkit-date-and-time-value,
+input[type="date"]::-webkit-date-and-time-value {
+  text-align: left;
+  min-height: 1.5em;
+}
+
 /* Better touch targets on mobile */
 @media (max-width: 640px) {
   button:not([role="switch"]),

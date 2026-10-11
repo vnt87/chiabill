@@ -165,7 +165,7 @@ export function Calculator() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
+            <div className="min-w-0">
               <label htmlFor="session-start" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 {t.sessionStart}
               </label>
@@ -180,7 +180,7 @@ export function Calculator() {
                 className="w-full rounded-none border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none transition focus:border-blue-600 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
               />
             </div>
-            <div>
+            <div className="min-w-0">
               <label htmlFor="session-end" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 {t.sessionEnd}
               </label>
@@ -195,7 +195,7 @@ export function Calculator() {
                 className="w-full rounded-none border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none transition focus:border-blue-600 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
               />
             </div>
-            <div>
+            <div className="min-w-0">
               <label htmlFor="session-duration" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 {t.sessionDurationHours}
               </label>

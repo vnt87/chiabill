@@ -128,7 +128,7 @@ export function History() {
 
       <SpotlightCard as="section" className="mb-6 rounded-none border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800/80">
         <div className="flex flex-col gap-4 md:flex-row md:items-end">
-          <div className="flex-1">
+          <div className="min-w-0 flex-1">
             <label
               htmlFor="history-filter-date"
               className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200"
@@ -147,7 +147,7 @@ export function History() {
             </div>
           </div>
 
-          <div className="flex-1">
+          <div className="min-w-0 flex-1">
             <label
               htmlFor="history-filter-participant"
               className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200"
