@@ -34,7 +34,7 @@ export function Calculator() {
       players: initialPlayers
     };
   });
-  const [sharedItems, setSharedItems] = useState<ConsumableItem[]>([]);
+  const [sharedItems, setSharedItems] = useState<ConsumableItem[]>(() => location.state?.initialData?.sharedItems ?? []);
 
   // Track guest player count for unique default names
   const [guestPlayerCount, setGuestPlayerCount] = useState(1);
@@ -70,20 +70,22 @@ export function Calculator() {
   const totalAmountInputRef = useRef<HTMLInputElement>(null);
   const [touched, setTouched] = useState({ amount: false, session: false, participants: false });
 
+  const hasSessionDuration = Number.isFinite(billData.sessionDurationHours) && (billData.sessionDurationHours ?? 0) > 0;
+
   const validationErrors = useMemo(() => {
     const errors: string[] = [];
     if (touched.amount && billData.totalAmount <= 0) errors.push(t.validation.amountRequired);
-    if (touched.session && (!billData.sessionStart || !billData.sessionEnd)) errors.push(t.validation.sessionTimesRequired);
-    if (touched.session && billData.sessionStart && billData.sessionEnd && billData.sessionStart === billData.sessionEnd) {
+    const hasSessionDuration = Number.isFinite(billData.sessionDurationHours) && (billData.sessionDurationHours ?? 0) > 0;
+    if (touched.session && !hasSessionDuration && (!billData.sessionStart || !billData.sessionEnd)) errors.push(t.validation.sessionTimesRequired);
+    if (touched.session && !hasSessionDuration && billData.sessionStart && billData.sessionEnd && billData.sessionStart === billData.sessionEnd) {
       errors.push(t.validation.sessionTimeInvalid);
     }
     if (touched.participants && !billData.players.some(player => player.participated)) errors.push(t.validation.participantsRequired);
     return errors;
-  }, [billData.totalAmount, billData.sessionStart, billData.sessionEnd, billData.players, t, touched]);
+  }, [billData.totalAmount, billData.sessionStart, billData.sessionEnd, billData.sessionDurationHours, billData.players, t, touched]);
 
   const isFormValid = billData.totalAmount > 0 &&
-    Boolean(billData.sessionStart && billData.sessionEnd) &&
-    billData.sessionStart !== billData.sessionEnd &&
+    (hasSessionDuration || (Boolean(billData.sessionStart && billData.sessionEnd) && billData.sessionStart !== billData.sessionEnd)) &&
     billData.players.some(player => player.participated);
 
   // Synchronize totalAmountInput with billData.totalAmount when it changes from outside
@@ -162,7 +164,7 @@ export function Calculator() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label htmlFor="session-start" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 {t.sessionStart}
@@ -193,11 +195,31 @@ export function Calculator() {
                 className="w-full rounded-none border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none transition focus:border-blue-600 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
               />
             </div>
+            <div>
+              <label htmlFor="session-duration" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                {t.sessionDurationHours}
+              </label>
+              <input
+                id="session-duration"
+                type="number"
+                inputMode="decimal"
+                min="0"
+                step="0.25"
+                value={billData.sessionDurationHours ?? ''}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const duration = value === '' ? undefined : Number(value);
+                  setBillData(previous => ({ ...previous, sessionDurationHours: duration }));
+                }}
+                onBlur={() => setTouched(previous => ({ ...previous, session: true }))}
+                className="w-full rounded-none border border-slate-300 bg-white px-3 py-2.5 text-slate-950 outline-none transition focus:border-blue-600 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
+              />
+            </div>
           </div>
-          {touched.session && (!billData.sessionStart || !billData.sessionEnd) && (
+          {touched.session && !hasSessionDuration && (!billData.sessionStart || !billData.sessionEnd) && (
             <p className="text-sm font-medium text-red-700 dark:text-red-400">{t.validation.sessionTimesRequired}</p>
           )}
-          {touched.session && billData.sessionStart && billData.sessionEnd && billData.sessionStart === billData.sessionEnd && (
+          {touched.session && !hasSessionDuration && billData.sessionStart && billData.sessionEnd && billData.sessionStart === billData.sessionEnd && (
             <p className="text-sm font-medium text-red-700 dark:text-red-400">{t.validation.sessionTimeInvalid}</p>
           )}
         </SpotlightCard>

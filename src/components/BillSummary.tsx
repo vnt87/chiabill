@@ -39,6 +39,7 @@ export function BillSummary({ data, sharedItems = [], validationErrors = [], isV
       // Filter out non-participating players before saving
       const billToSave = {
         ...data,
+        sharedItems,
         players: data.players.filter(player => player.participated)
       };
       const savedBill = await saveBill(billToSave);
@@ -87,6 +88,9 @@ export function BillSummary({ data, sharedItems = [], validationErrors = [], isV
   };
 
   const calculateTotalTime = () => {
+    if (Number.isFinite(data.sessionDurationHours) && (data.sessionDurationHours ?? 0) > 0) {
+      return Math.round((data.sessionDurationHours ?? 0) * 60);
+    }
     if (!data.sessionStart || !data.sessionEnd) return 0;
     const start = parse(data.sessionStart, 'HH:mm', new Date());
     const end = parse(data.sessionEnd, 'HH:mm', new Date());

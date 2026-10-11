@@ -1,12 +1,17 @@
 import { Player, ConsumableItem, PREDEFINED_ITEMS, PredefinedItemName } from '../types';
 import { PlusIcon, MinusIcon, XIcon } from 'lucide-react';
 import * as Switch from '@radix-ui/react-switch';
-import { useEffect, useState, useRef } from 'react';
+import { forwardRef, useEffect, useState, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import * as Ariakit from '@ariakit/react';
 import { NumericFormat } from 'react-number-format';
 import { RollingText } from './ui/RollingText';
 import { SpotlightCard } from './ui/SpotlightCard';
+
+const NumericInput = forwardRef<HTMLInputElement, React.ComponentProps<'input'>>((props, ref) => (
+  <input {...props} ref={ref} type="number" />
+));
+NumericInput.displayName = 'NumericInput';
 
 interface PlayerSelectionProps {
   players: Player[];
@@ -304,7 +309,8 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                           decimalScale={0}
                           aria-label={`${t.quantity}: ${item.name}`}
                           className="w-full rounded-none border border-slate-300 bg-white p-2 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-white"
-                          customInput={props => <input {...props} type="number" min="1" />}
+                          customInput={NumericInput}
+                          min="1"
                         />
                       </div>
 
@@ -318,7 +324,8 @@ export function PlayerSelection({ players, onPlayerChange, sessionStart, session
                           decimalScale={0}
                           aria-label={`${t.cost}: ${item.name}`}
                           className="w-full rounded-none border border-slate-300 bg-white p-2 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-white"
-                          customInput={props => <input {...props} type="number" min="0" />}
+                          customInput={NumericInput}
+                          min="0"
                         />
                       </div>
 

@@ -21,6 +21,8 @@ export interface BillData {
   totalAmount: number;
   sessionStart: string;
   sessionEnd: string;
+  sessionDurationHours?: number;
+  sharedItems?: ConsumableItem[];
   players: Player[];
 }
 

@@ -104,6 +104,9 @@ export function Layout({ children, isDarkMode, setIsDarkMode }: LayoutProps) {
               <Github size={14} /> Source code
             </a>
           </div>
+          <div className="text-xs opacity-75" aria-label={`Build ${__BUILD_NUMBER__}`}>
+            Build {__BUILD_NUMBER__}
+          </div>
         </div>
       </footer>
     </div>

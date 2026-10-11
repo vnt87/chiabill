@@ -51,22 +51,30 @@ export function BillDetails({ id }: BillDetailsProps) {
     // Calculate total consumables cost for all players
     const totalConsumablesCost = participatingPlayers.reduce((sum, p) => 
       sum + calculatePlayerConsumables(p), 0);
+
+    const totalSharedItemsCost = (bill?.sharedItems ?? []).reduce(
+      (sum, item) => sum + item.quantity * item.costPerUnit,
+      0
+    );
     
-    // The base amount should be total amount minus consumables
-    const baseAmount = Math.max(0, (bill?.totalAmount ?? 0) - totalConsumablesCost);
+    // Shared items are split evenly; keep them separate from time-weighted table cost.
+    const baseAmount = Math.max(0, (bill?.totalAmount ?? 0) - totalConsumablesCost - totalSharedItemsCost);
     
     // Get player's consumables cost
     const playerConsumables = calculatePlayerConsumables(player);
+    const sharedItemsShare = participatingPlayers.length > 0
+      ? totalSharedItemsCost / participatingPlayers.length
+      : 0;
     
     // If we have valid time data, use time-based calculation
     if (totalPlayerMinutes > 0) {
       const playerTime = calculatePlayerTime(player);
       const baseShare = (baseAmount * playerTime) / totalPlayerMinutes;
-      return baseShare + playerConsumables;
+      return baseShare + playerConsumables + sharedItemsShare;
     }
     
     // If no valid time data, split base amount equally
-    return (baseAmount / participatingPlayers.length) + playerConsumables;
+    return (baseAmount / participatingPlayers.length) + playerConsumables + sharedItemsShare;
   };
 
   const formatCurrency = (amount: number): string => {
@@ -192,7 +200,9 @@ export function BillDetails({ id }: BillDetailsProps) {
         <section className="mb-6 rounded-none bg-slate-50 px-4 py-4 dark:bg-slate-900/60" aria-labelledby="bill-session-info">
           <h2 id="bill-session-info" className="mb-2 text-lg font-semibold text-slate-900 dark:text-white">{t.sessionInfo}</h2>
             <div className="text-slate-600 dark:text-slate-400">
-              {bill.sessionStart && bill.sessionEnd ? (
+              {Number.isFinite(bill.sessionDurationHours) && (bill.sessionDurationHours ?? 0) > 0 ? (
+                formatDuration(Math.round((bill.sessionDurationHours ?? 0) * 60))
+              ) : bill.sessionStart && bill.sessionEnd ? (
                 <>
                   {(() => {
                     const [startHours, startMinutes] = bill.sessionStart.split(':').map(Number);
@@ -250,6 +260,19 @@ export function BillDetails({ id }: BillDetailsProps) {
                         <li key={item.id} className="flex justify-between">
                           <span>{item.name} x{item.quantity}</span>
                           <span>{(item.costPerUnit * item.quantity).toLocaleString()}k</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {(bill.sharedItems ?? []).length > 0 && (
+                  <div className="mt-3 rounded-none bg-slate-50 px-3 py-3 dark:bg-slate-900/60">
+                    <div className="mb-2 text-sm font-medium text-slate-800 dark:text-slate-200">{t.sharedItems}</div>
+                    <ul className="space-y-1 text-sm text-slate-600 dark:text-slate-400">
+                      {bill.sharedItems?.map((item) => (
+                        <li key={item.id} className="flex justify-between">
+                          <span>{item.name} ({item.quantity}/{bill.players.filter(p => p.participated).length})</span>
+                          <span>{(item.quantity * item.costPerUnit / bill.players.filter(p => p.participated).length).toLocaleString()}k</span>
                         </li>
                       ))}
                     </ul>

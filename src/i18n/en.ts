@@ -6,6 +6,7 @@ export const en = {
   totalAmount: 'Total Amount',
   sessionStart: 'Session Start',
   sessionEnd: 'Session End',
+  sessionDurationHours: 'Duration (hours)',
   players: 'Players',
   fullSession: 'Full Session',
   startTime: 'Start Time',
@@ -74,10 +75,10 @@ export const en = {
   },
   validation: {
     amountRequired: 'Enter an amount greater than 0k.',
-    sessionTimesRequired: 'Enter both the start and end time.',
-    sessionTimeInvalid: 'Start and end time must be different.',
+    sessionTimesRequired: 'Enter a duration or both the start and end time.',
+    sessionTimeInvalid: 'Start and end time must be different, or enter a duration.',
     participantsRequired: 'Select at least one player.',
-    actionsUnavailable: 'Complete the amount, session time, and participant selection to save or export.'
+    actionsUnavailable: 'Complete the amount, session time or duration, and participant selection to save or export.'
   },
   accessibility: {
     primaryNavigation: 'Primary navigation',

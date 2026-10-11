@@ -6,6 +6,7 @@ export const vi = {
   totalAmount: 'Tổng Tiền',
   sessionStart: 'Giờ Bắt Đầu',
   sessionEnd: 'Giờ Kết Thúc',
+  sessionDurationHours: 'Thời Lượng (giờ)',
   players: 'Người Chơi',
   fullSession: 'Chơi Full',
   startTime: 'Giờ Vào',
@@ -74,10 +75,10 @@ export const vi = {
   },
   validation: {
     amountRequired: 'Nhập số tiền lớn hơn 0k.',
-    sessionTimesRequired: 'Nhập đầy đủ giờ bắt đầu và kết thúc.',
-    sessionTimeInvalid: 'Giờ bắt đầu và kết thúc phải khác nhau.',
+    sessionTimesRequired: 'Nhập thời lượng hoặc cả giờ bắt đầu và kết thúc.',
+    sessionTimeInvalid: 'Giờ bắt đầu và kết thúc phải khác nhau, hoặc hãy nhập thời lượng.',
     participantsRequired: 'Chọn ít nhất một người chơi.',
-    actionsUnavailable: 'Hoàn tất số tiền, thời gian và người chơi để lưu hoặc xuất ảnh.'
+    actionsUnavailable: 'Hoàn tất số tiền, thời gian hoặc thời lượng, và người chơi để lưu hoặc xuất ảnh.'
   },
   accessibility: {
     primaryNavigation: 'Điều hướng chính',

@@ -67,6 +67,9 @@ export function History() {
   const hasFilters = filterDate.length > 0 || filterParticipant.trim().length > 0;
 
   const getSessionSummary = (bill: BillWithMetadata) => {
+    if (Number.isFinite(bill.sessionDurationHours) && (bill.sessionDurationHours ?? 0) > 0) {
+      return formatDuration(Math.round((bill.sessionDurationHours ?? 0) * 60));
+    }
     if (!bill.sessionStart || !bill.sessionEnd) {
       return t.noTimeData;
     }
